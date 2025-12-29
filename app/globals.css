@@ -1,0 +1,517 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 249, 228;
+  --background-end-rgb: 255, 255, 255;
+}
+
+/* Dark mode colors - softer pastels for dark theme */
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 30, 30, 40;
+  --background-end-rgb: 20, 20, 30;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom baby theme styles */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Safe area for mobile bottom navigation */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Add bottom padding on mobile for bottom nav */
+  @media (max-width: 768px) {
+    .page-content-mobile {
+      padding-bottom: 5rem; /* 80px to account for bottom nav height */
+    }
+  }
+}
+
+/* Dark mode background overrides */
+.dark .bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, rgb(30, 30, 40), rgb(25, 25, 35), rgb(20, 20, 30)) !important;
+}
+
+/* Dark mode for baby color backgrounds */
+.dark .bg-baby-pink {
+  background-color: rgb(60, 40, 50) !important;
+}
+
+.dark .bg-baby-blue {
+  background-color: rgb(40, 50, 60) !important;
+}
+
+.dark .bg-baby-yellow {
+  background-color: rgb(60, 55, 40) !important;
+}
+
+.dark .bg-baby-green {
+  background-color: rgb(40, 60, 50) !important;
+}
+
+.dark .bg-baby-purple {
+  background-color: rgb(50, 40, 60) !important;
+}
+
+.dark .bg-baby-peach {
+  background-color: rgb(60, 50, 45) !important;
+}
+
+/* Dark mode for white backgrounds */
+.dark .bg-white {
+  background-color: rgb(35, 35, 45) !important;
+}
+
+/* Dark mode text colors */
+.dark .text-gray-600 {
+  color: rgb(160, 160, 180) !important;
+}
+
+.dark .text-gray-700 {
+  color: rgb(140, 140, 160) !important;
+}
+
+.dark .text-gray-800 {
+  color: rgb(220, 220, 240) !important;
+}
+
+.dark .text-gray-500 {
+  color: rgb(140, 140, 160) !important;
+}
+
+/* Dark mode button and border colors */
+.dark .border-gray-200 {
+  border-color: rgb(60, 60, 70) !important;
+}
+
+.dark .border-gray-300 {
+  border-color: rgb(70, 70, 80) !important;
+}
+
+/* Dark mode hover states */
+.dark .hover\:bg-gray-100:hover {
+  background-color: rgb(50, 50, 60) !important;
+}
+
+.dark .hover\:bg-primary-50:hover {
+  background-color: rgb(60, 40, 50) !important;
+}
+
+.dark .hover\:border-gray-400:hover {
+  border-color: rgb(80, 80, 90) !important;
+}
+
+/* Dark mode for primary backgrounds */
+.dark .bg-primary-50 {
+  background-color: rgb(60, 40, 50) !important;
+}
+
+/* Dark mode input fields */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: rgb(40, 40, 50) !important;
+  border-color: rgb(70, 70, 80) !important;
+  color: rgb(220, 220, 240) !important;
+}
+
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  border-color: rgb(255, 107, 138) !important;
+  background-color: rgb(45, 45, 55) !important;
+}
+
+/* Dark mode shadows */
+.dark .shadow-soft {
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.3), 0 10px 20px -2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark .shadow-playful {
+  box-shadow: 0 4px 20px -2px rgba(255, 107, 138, 0.4) !important;
+}
+
+/* Hide print-only elements on screen */
+.print-title,
+.page-2-header,
+.page-3-header,
+.print-footer {
+  display: none;
+}
+
+/* Print styles for reports - preserve dark mode */
+@media print {
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+
+  /* Hide all website chrome during print */
+  nav,
+  header,
+  .bottom-nav,
+  button,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Hide ALL content except the report */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Make only report and its ancestors visible */
+  .report-container,
+  .report-container *,
+  .report-container::before,
+  .report-container::after {
+    visibility: visible !important;
+  }
+
+  /* Ensure report container ancestors are also visible */
+  body:has(.report-container),
+  body:has(.report-container) > *,
+  body:has(.report-container) > * > *,
+  body:has(.report-container) > * > * > *,
+  body:has(.report-container) > * > * > * > *,
+  body:has(.report-container) > * > * > * > * > * {
+    visibility: visible !important;
+  }
+
+  /* CRITICAL: Neutralize modal structure for proper page breaks */
+  .fixed,
+  .relative,
+  .absolute {
+    position: static !important;
+  }
+
+  /* Remove flex layout that breaks page-break-after */
+  .flex,
+  .flex-col,
+  .flex-1 {
+    display: block !important;
+    flex: none !important;
+  }
+
+  /* Remove overflow that prevents page breaks */
+  .overflow-y-auto,
+  .overflow-hidden,
+  .overflow-auto {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  /* Hide modal backdrop */
+  .bg-black.bg-opacity-50,
+  .bg-opacity-50 {
+    display: none !important;
+  }
+
+  /* Report Container - Ensure it's the only thing visible */
+  .report-container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: rgb(20, 20, 30) !important;
+  }
+
+  /* Screen-only elements - hide in print */
+  .report-header,
+  .report-header *,
+  section.report-header,
+  .summary-heading,
+  .insights-heading {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Also hide any h3 headings inside sections in print (we have page headers instead) */
+  .summary-section > h3,
+  .details-section > section > h3:not(.page-2-header h3):not(.page-3-header h3) {
+    font-size: 0.875rem !important;
+    margin-bottom: 0.25rem !important;
+    margin-top: 0.25rem !important;
+  }
+
+  /* Print-only elements - show in print */
+  .print-title,
+  .page-2-header,
+  .page-3-header,
+  .print-footer {
+    display: block !important;
+  }
+
+  /* PAGE 1: Title and Summary - Compact */
+  .print-title {
+    padding-top: 1rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .print-title h1 {
+    font-size: 2rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .print-title .bg-gradient-to-r {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .print-title p {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .summary-section {
+    padding-bottom: 1rem !important;
+    page-break-after: always;
+    -webkit-column-break-after: always;
+    break-after: page;
+  }
+
+  .summary-section .grid {
+    gap: 0.75rem !important;
+  }
+
+  .summary-section > div > div {
+    padding: 1rem !important;
+    border-radius: 0.75rem !important;
+  }
+
+  .summary-section .text-2xl,
+  .summary-section .text-3xl,
+  .summary-section .text-4xl {
+    font-size: 1.5rem !important;
+  }
+
+  .summary-section .text-xl {
+    font-size: 1.25rem !important;
+  }
+
+  .summary-section .text-xs,
+  .summary-section .text-sm {
+    font-size: 0.75rem !important;
+  }
+
+  /* PAGE 2: Detailed Statistics - Compact */
+  .page-2-header {
+    padding-top: 1rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .page-2-header h2 {
+    font-size: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .details-section {
+    padding-bottom: 0.5rem !important;
+    page-break-after: always;
+    -webkit-column-break-after: always;
+    break-after: page;
+  }
+
+  .details-section h3 {
+    font-size: 1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .details-section section {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .details-section .bg-white,
+  .details-section .bg-gray-700 {
+    padding: 0.75rem !important;
+    border-radius: 0.5rem !important;
+  }
+
+  .details-section .grid {
+    gap: 0.5rem !important;
+  }
+
+  .details-section .text-xs,
+  .details-section .text-sm {
+    font-size: 0.65rem !important;
+  }
+
+  .details-section .text-lg,
+  .details-section .text-xl,
+  .details-section .text-2xl {
+    font-size: 0.875rem !important;
+  }
+
+  /* PAGE 3: Key Insights - Compact */
+  .page-3-header {
+    padding-top: 1rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .page-3-header h2 {
+    font-size: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .insights-section {
+    padding-bottom: 0.5rem !important;
+  }
+
+  .insights-section .bg-gradient-to-r {
+    padding: 1rem !important;
+    border-radius: 0.5rem !important;
+  }
+
+  .insights-section ul {
+    gap: 0.5rem !important;
+  }
+
+  .insights-section li {
+    font-size: 0.75rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .print-footer {
+    padding-top: 1rem !important;
+    margin-top: 1rem !important;
+    border-top: 1px solid rgb(70, 70, 80);
+  }
+
+  .print-footer p {
+    font-size: 0.65rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* Additional compact spacing */
+  .report-container .space-y-4,
+  .report-container .space-y-6,
+  .report-container .space-y-8 {
+    gap: 0.5rem !important;
+  }
+
+  .report-container section {
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Reduce grid card sizes */
+  .summary-section .grid > div {
+    min-height: auto !important;
+  }
+
+  /* Compact emoji/icons */
+  .summary-section .text-2xl,
+  .summary-section .text-3xl,
+  .summary-section .text-4xl,
+  .summary-section .text-5xl {
+    margin-bottom: 0.25rem !important;
+    line-height: 1 !important;
+  }
+
+  /* Hide website elements when printing */
+  nav,
+  header,
+  .bottom-nav {
+    display: none !important;
+  }
+
+  /* Preserve dark mode in print */
+  body {
+    background: rgb(20, 20, 30) !important;
+    color: rgb(220, 220, 240) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Preserve all background colors in print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Keep dark backgrounds */
+  .dark .bg-white {
+    background-color: rgb(35, 35, 45) !important;
+  }
+
+  .dark .bg-gray-700 {
+    background-color: rgb(45, 45, 55) !important;
+  }
+
+  .dark .bg-gray-800 {
+    background-color: rgb(30, 30, 40) !important;
+  }
+
+  /* Keep baby color backgrounds */
+  .dark .bg-baby-pink {
+    background-color: rgb(60, 40, 50) !important;
+  }
+
+  .dark .bg-baby-blue {
+    background-color: rgb(40, 50, 60) !important;
+  }
+
+  .dark .bg-baby-yellow {
+    background-color: rgb(60, 55, 40) !important;
+  }
+
+  .dark .bg-baby-purple {
+    background-color: rgb(50, 40, 60) !important;
+  }
+
+  /* Keep text colors */
+  .dark .text-gray-100,
+  .dark .text-gray-200 {
+    color: rgb(220, 220, 240) !important;
+  }
+
+  .dark .text-gray-300,
+  .dark .text-gray-400 {
+    color: rgb(160, 160, 180) !important;
+  }
+
+  .dark .text-gray-600,
+  .dark .text-gray-700 {
+    color: rgb(140, 140, 160) !important;
+  }
+
+  /* Keep gradients */
+  .dark .bg-gradient-to-r {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .shadow-soft,
+  .shadow-playful {
+    box-shadow: none !important;
+  }
+
+  .rounded-3xl,
+  .rounded-2xl,
+  .rounded-xl {
+    border-radius: 8px !important;
+  }
+}

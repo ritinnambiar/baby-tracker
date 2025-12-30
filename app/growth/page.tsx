@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useActiveBaby } from '@/lib/hooks/useActiveBaby'
 import { useGrowth } from '@/lib/hooks/useGrowth'
 import { Button } from '@/components/ui/Button'

@@ -11,7 +11,13 @@
       "Bash(git commit:*)",
       "Bash(npm run dev:*)",
       "Bash(npx supabase login)",
-      "Bash(npx supabase:*)"
+      "Bash(npx supabase:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git remote add:*)",
+      "Bash(curl:*)",
+      "Bash(for page in feeding diaper milestones)",
+      "Bash(do echo -n \"$page: \")",
+      "Bash(done)"
     ]
   }
 }

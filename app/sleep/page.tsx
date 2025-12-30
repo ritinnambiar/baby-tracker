@@ -148,29 +148,52 @@ export default function SleepPage() {
           </Link>
         </div>
 
-        {/* Mode Selector */}
-        <div className="flex gap-3 mb-6">
-          <Button
-            variant={mode === 'schedule' ? 'primary' : 'outline'}
+        {/* Mode Selector - Big Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <button
             onClick={() => setMode('schedule')}
-            className="flex-1"
+            className={`rounded-3xl p-6 transition-all ${
+              mode === 'schedule'
+                ? 'bg-gradient-to-br from-baby-blue to-blue-200 shadow-lg scale-105'
+                : 'bg-white hover:shadow-md hover:scale-102'
+            }`}
           >
-            📅 Schedule
-          </Button>
-          <Button
-            variant={mode === 'timer' ? 'primary' : 'outline'}
+            <div className="text-center">
+              <div className="text-5xl mb-3">📅</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-1">Schedule</h3>
+              <p className="text-sm text-gray-600">View sleep history</p>
+            </div>
+          </button>
+
+          <button
             onClick={() => setMode('timer')}
-            className="flex-1"
+            className={`rounded-3xl p-6 transition-all ${
+              mode === 'timer'
+                ? 'bg-gradient-to-br from-baby-purple to-purple-200 shadow-lg scale-105'
+                : 'bg-white hover:shadow-md hover:scale-102'
+            }`}
           >
-            ⏱️ Timer
-          </Button>
-          <Button
-            variant={mode === 'manual' ? 'primary' : 'outline'}
+            <div className="text-center">
+              <div className="text-5xl mb-3">⏱️</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-1">Timer</h3>
+              <p className="text-sm text-gray-600">Track active sleep</p>
+            </div>
+          </button>
+
+          <button
             onClick={() => setMode('manual')}
-            className="flex-1"
+            className={`rounded-3xl p-6 transition-all ${
+              mode === 'manual'
+                ? 'bg-gradient-to-br from-baby-yellow to-yellow-200 shadow-lg scale-105'
+                : 'bg-white hover:shadow-md hover:scale-102'
+            }`}
           >
-            ✏️ Manual
-          </Button>
+            <div className="text-center">
+              <div className="text-5xl mb-3">✏️</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-1">Manual</h3>
+              <p className="text-sm text-gray-600">Log past sleep</p>
+            </div>
+          </button>
         </div>
 
         {/* Date Filter - only show in schedule mode */}

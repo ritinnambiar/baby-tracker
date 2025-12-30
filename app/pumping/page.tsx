@@ -132,22 +132,37 @@ export default function PumpingPage() {
           </Link>
         </div>
 
-        {/* Mode Selector */}
-        <div className="flex gap-3 mb-6">
-          <Button
-            variant={mode === 'schedule' ? 'primary' : 'outline'}
+        {/* Mode Selector - Big Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <button
             onClick={() => setMode('schedule')}
-            className="flex-1"
+            className={`rounded-3xl p-6 transition-all ${
+              mode === 'schedule'
+                ? 'bg-gradient-to-br from-baby-purple to-purple-200 shadow-lg scale-105'
+                : 'bg-white hover:shadow-md hover:scale-102'
+            }`}
           >
-            📅 Schedule
-          </Button>
-          <Button
-            variant={mode === 'log' ? 'primary' : 'outline'}
+            <div className="text-center">
+              <div className="text-5xl mb-3">📅</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-1">Schedule</h3>
+              <p className="text-sm text-gray-600">View pumping history</p>
+            </div>
+          </button>
+
+          <button
             onClick={() => setMode('log')}
-            className="flex-1"
+            className={`rounded-3xl p-6 transition-all ${
+              mode === 'log'
+                ? 'bg-gradient-to-br from-baby-pink to-pink-200 shadow-lg scale-105'
+                : 'bg-white hover:shadow-md hover:scale-102'
+            }`}
           >
-            ✏️ Log Session
-          </Button>
+            <div className="text-center">
+              <div className="text-5xl mb-3">💧</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-1">Log Session</h3>
+              <p className="text-sm text-gray-600">Record pumping</p>
+            </div>
+          </button>
         </div>
 
         {/* Date Filter - only show in schedule mode */}
@@ -194,14 +209,14 @@ export default function PumpingPage() {
                           <div className="bg-baby-purple rounded-xl px-3 py-2 text-center">
                             <div className="text-xs text-gray-600">Total</div>
                             <div className="text-sm font-semibold text-primary-600">
-                              {group.stats.totalAmount} ml
+                              💧 {group.stats.totalAmount}ml
                             </div>
                           </div>
                           {group.stats.leftAmount > 0 && (
                             <div className="bg-baby-pink rounded-xl px-3 py-2 text-center">
                               <div className="text-xs text-gray-600">Left</div>
                               <div className="text-sm font-semibold text-primary-600">
-                                {group.stats.leftAmount} ml
+                                {group.stats.leftAmount}ml
                               </div>
                             </div>
                           )}
@@ -209,7 +224,7 @@ export default function PumpingPage() {
                             <div className="bg-baby-blue rounded-xl px-3 py-2 text-center">
                               <div className="text-xs text-gray-600">Right</div>
                               <div className="text-sm font-semibold text-accent-600">
-                                {group.stats.rightAmount} ml
+                                {group.stats.rightAmount}ml
                               </div>
                             </div>
                           )}

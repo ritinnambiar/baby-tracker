@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageTransition } from '@/components/ui/PageTransition'
 import { SummaryCard } from '@/components/dashboard/SummaryCard'
+import { QuickStats } from '@/components/dashboard/QuickStats'
+import { DailyNotes } from '@/components/dashboard/DailyNotes'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { DateFilter, DateRange } from '@/components/ui/DateFilter'
 import { ReportButton } from '@/components/ui/ReportButton'
@@ -21,6 +23,8 @@ import { FeedingLog } from '@/lib/types/feeding'
 import { SleepLog } from '@/lib/types/sleep'
 import { DiaperChange } from '@/lib/types/diaper'
 import { PumpingLog } from '@/lib/types/pumping'
+import { differenceInMonths } from 'date-fns'
+import { COMMON_MILESTONES } from '@/lib/constants/milestones'
 
 interface TodaySummary {
   feeding: {
@@ -75,6 +79,133 @@ export default function DashboardPage() {
     diapers: [],
     pumpings: [],
   })
+  const [latestActivities, setLatestActivities] = useState<{
+    lastFeeding?: FeedingLog
+    lastSleep?: SleepLog
+    lastDiaper?: DiaperChange
+    lastPumping?: PumpingLog
+  }>({})
+  const [nextVaccine, setNextVaccine] = useState<any>(null)
+  const [upcomingMilestone, setUpcomingMilestone] = useState<any>(null)
+
+  // Fetch latest activities for Quick Stats
+  useEffect(() => {
+    const fetchLatestActivities = async () => {
+      if (!activeBaby) return
+
+      try {
+        const [feedingRes, sleepRes, diaperRes, pumpingRes] = await Promise.all([
+          supabase
+            .from('feeding_logs')
+            .select('*')
+            .eq('baby_id', activeBaby.id)
+            .order('started_at', { ascending: false })
+            .limit(1)
+            .single(),
+          supabase
+            .from('sleep_logs')
+            .select('*')
+            .eq('baby_id', activeBaby.id)
+            .order('started_at', { ascending: false })
+            .limit(1)
+            .single(),
+          supabase
+            .from('diaper_changes')
+            .select('*')
+            .eq('baby_id', activeBaby.id)
+            .order('changed_at', { ascending: false })
+            .limit(1)
+            .single(),
+          supabase
+            .from('pumping_logs')
+            .select('*')
+            .eq('baby_id', activeBaby.id)
+            .order('started_at', { ascending: false })
+            .limit(1)
+            .single(),
+        ])
+
+        setLatestActivities({
+          lastFeeding: feedingRes.data || undefined,
+          lastSleep: sleepRes.data || undefined,
+          lastDiaper: diaperRes.data || undefined,
+          lastPumping: pumpingRes.data || undefined,
+        })
+      } catch (error) {
+        console.error('Error fetching latest activities:', error)
+      }
+    }
+
+    fetchLatestActivities()
+  }, [activeBaby, supabase])
+
+  // Fetch next upcoming vaccination
+  useEffect(() => {
+    const fetchNextVaccine = async () => {
+      if (!activeBaby) return
+
+      try {
+        const babyAgeMonths = differenceInMonths(new Date(), parseISO(activeBaby.date_of_birth))
+
+        const { data: vaccinations } = await supabase
+          .from('vaccinations')
+          .select('*')
+          .eq('baby_id', activeBaby.id)
+          .eq('is_completed', false)
+          .gte('age_months', babyAgeMonths)
+          .order('age_months', { ascending: true })
+          .limit(1)
+          .single()
+
+        setNextVaccine(vaccinations)
+      } catch (error) {
+        // No upcoming vaccinations or error
+        setNextVaccine(null)
+      }
+    }
+
+    fetchNextVaccine()
+  }, [activeBaby, supabase])
+
+  // Find next upcoming milestone
+  useEffect(() => {
+    const findUpcomingMilestone = async () => {
+      if (!activeBaby) return
+
+      try {
+        const babyAgeMonths = differenceInMonths(new Date(), parseISO(activeBaby.date_of_birth))
+
+        // Get all milestones from database and find unachieved ones
+        const { data: allMilestones } = await supabase
+          .from('milestones')
+          .select('milestone_title, achieved_date, milestone_category')
+          .eq('baby_id', activeBaby.id)
+
+        // Get titles of achieved milestones (where achieved_date is not null)
+        const achievedTitles = new Set(
+          allMilestones?.filter(m => m.achieved_date !== null).map(m => m.milestone_title) || []
+        )
+
+        // Find next unachieved milestone from common list
+        // Show milestones within baby's age range or up to 6 months ahead
+        const upcoming = COMMON_MILESTONES
+          .filter(m => {
+            // Not achieved yet
+            if (achievedTitles.has(m.title)) return false
+
+            // Within current age range OR coming up in next 6 months
+            return m.ageMonthsMin <= babyAgeMonths + 6 && m.ageMonthsMax >= babyAgeMonths
+          })
+          .sort((a, b) => a.ageMonthsMin - b.ageMonthsMin)[0]
+
+        setUpcomingMilestone(upcoming || null)
+      } catch (error) {
+        setUpcomingMilestone(null)
+      }
+    }
+
+    findUpcomingMilestone()
+  }, [activeBaby, supabase])
 
   // Fetch today's summary
   useEffect(() => {
@@ -295,6 +426,71 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Quick Stats Widget */}
+        {activeBaby && (
+          <QuickStats
+            lastFeeding={latestActivities.lastFeeding}
+            lastSleep={latestActivities.lastSleep}
+            lastDiaper={latestActivities.lastDiaper}
+            lastPumping={latestActivities.lastPumping}
+          />
+        )}
+
+        {/* Upcoming Reminders */}
+        {activeBaby && (nextVaccine || upcomingMilestone) && (
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
+            {/* Next Vaccination Reminder */}
+            {nextVaccine && (
+              <Card className="border-2 border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/20">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">💉</span>
+                      <h3 className="text-lg font-bold text-purple-800 dark:text-purple-200">Upcoming Vaccine</h3>
+                    </div>
+                    <p className="text-purple-900 dark:text-purple-100 font-semibold mb-1">
+                      {nextVaccine.vaccine_name}
+                    </p>
+                    <p className="text-sm text-purple-700 dark:text-purple-300">
+                      At {nextVaccine.age_months} months
+                    </p>
+                  </div>
+                  <Link href="/vaccinations">
+                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+                      View
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+            )}
+
+            {/* Upcoming Milestone */}
+            {upcomingMilestone && (
+              <Card className="border-2 border-yellow-300 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">🎯</span>
+                      <h3 className="text-lg font-bold text-yellow-800 dark:text-yellow-200">Upcoming Milestone</h3>
+                    </div>
+                    <p className="text-yellow-900 dark:text-yellow-100 font-semibold mb-1">
+                      {upcomingMilestone.title}
+                    </p>
+                    <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                      {upcomingMilestone.ageMonthsMin}-{upcomingMilestone.ageMonthsMax} months
+                    </p>
+                  </div>
+                  <Link href="/milestones">
+                    <Button size="sm" className="bg-yellow-600 hover:bg-yellow-700">
+                      View
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+            )}
+          </div>
+        )}
+
         {/* Dashboard Content */}
         {!activeBaby && babies.length === 0 ? (
           <Card>
@@ -312,23 +508,22 @@ export default function DashboardPage() {
             </div>
           </Card>
         ) : (
-          <div className="bg-white rounded-3xl shadow-soft p-8">
-            <div className="text-center mb-8">
-              <div className="text-6xl mb-4">🎉</div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                Today's Summary
+          <>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                Today's Activity & Features
               </h2>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 {activeBaby && `Tracking for ${activeBaby.name}`}
               </p>
             </div>
 
             {loadingSummary ? (
               <div className="flex justify-center py-12">
-                <LoadingSpinner text="Loading today's summary..." />
+                <LoadingSpinner text="Loading..." />
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {/* Feeding Card */}
                 <SummaryCard href="/feeding" bgColor="bg-baby-pink" icon="🍼" title="Feeding">
                   {summary && summary.feeding.count > 0 ? (
@@ -400,34 +595,55 @@ export default function DashboardPage() {
                     <p className="text-sm text-gray-600">No measurements yet</p>
                   )}
                 </SummaryCard>
+
+                {/* Vaccinations Card */}
+                <SummaryCard href="/vaccinations" bgColor="bg-baby-purple" icon="💉" title="Vaccinations">
+                  <p className="text-sm text-gray-700">Track vaccine schedule</p>
+                </SummaryCard>
+
+                {/* Medications Card */}
+                <SummaryCard href="/medications" bgColor="bg-baby-pink" icon="💊" title="Medications">
+                  <p className="text-sm text-gray-700">Manage medications</p>
+                </SummaryCard>
+
+                {/* Milestones Card */}
+                <SummaryCard href="/milestones" bgColor="bg-baby-yellow" icon="🎯" title="Milestones">
+                  <p className="text-sm text-gray-700">Track development</p>
+                </SummaryCard>
+
+                {/* Analytics Card */}
+                <SummaryCard href="/analytics" bgColor="bg-baby-blue" icon="📈" title="Analytics">
+                  <p className="text-sm text-gray-700">View insights</p>
+                </SummaryCard>
               </div>
             )}
-          </div>
+          </>
         )}
 
         {/* Overall Report Generation */}
         {activeBaby && (
           <div className="mt-8">
             <Card>
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">📊 Generate Overall Report</h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Create a comprehensive report with all tracking data for a specific date range
-                </p>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">Generate Report</h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    Export comprehensive PDF report
+                  </p>
+                </div>
               </div>
 
-              <div className="space-y-4">
-                <DateFilter
-                  onFilterChange={setDateRange}
-                  initialFilter="week"
-                />
-
-                <div className="flex justify-end">
-                  <ReportButton
-                    onClick={handleGenerateReport}
-                    disabled={loadingReport}
+              <div className="flex gap-4 items-end">
+                <div className="flex-1">
+                  <DateFilter
+                    onFilterChange={setDateRange}
+                    initialFilter="week"
                   />
                 </div>
+                <ReportButton
+                  onClick={handleGenerateReport}
+                  disabled={loadingReport}
+                />
               </div>
             </Card>
           </div>

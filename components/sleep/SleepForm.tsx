@@ -7,6 +7,7 @@ import { useAuth } from '@/components/auth/AuthProvider'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
+import { ImageUpload } from '@/components/ui/ImageUpload'
 import { SleepType } from '@/lib/types/sleep'
 import toast from 'react-hot-toast'
 
@@ -20,6 +21,7 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
   const [notes, setNotes] = useState('')
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
 
   // Set default times on client side only to avoid hydration mismatch
   useEffect(() => {
@@ -60,6 +62,7 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
         started_at: start.toISOString(),
         ended_at: end.toISOString(),
         notes: notes || null,
+        photo_url: photoUrl || null,
       })
 
       if (error) throw error
@@ -72,6 +75,7 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
       setStartTime(twoHoursAgo.toISOString().slice(0, 16))
       setEndTime(now.toISOString().slice(0, 16))
       setNotes('')
+      setPhotoUrl(null)
 
       onComplete?.()
     } catch (error: any) {
@@ -156,6 +160,21 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Any additional notes..."
           />
+
+          {user && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                Photo (Optional)
+              </label>
+              <ImageUpload
+                userId={user.id}
+                onUploadComplete={setPhotoUrl}
+                currentImageUrl={photoUrl}
+                onRemove={() => setPhotoUrl(null)}
+                label="Add Photo"
+              />
+            </div>
+          )}
 
           <Button type="submit" className="w-full" size="lg" isLoading={loading}>
             Log Sleep Session

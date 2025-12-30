@@ -141,29 +141,52 @@ export default function FeedingPage() {
           </Link>
         </div>
 
-        {/* Mode Selector */}
-        <div className="flex gap-3 mb-6">
-          <Button
-            variant={mode === 'schedule' ? 'primary' : 'outline'}
+        {/* Mode Selector - Big Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <button
             onClick={() => setMode('schedule')}
-            className="flex-1"
+            className={`rounded-3xl p-6 transition-all ${
+              mode === 'schedule'
+                ? 'bg-gradient-to-br from-baby-yellow to-yellow-200 shadow-lg scale-105'
+                : 'bg-white hover:shadow-md hover:scale-102'
+            }`}
           >
-            📅 Schedule
-          </Button>
-          <Button
-            variant={mode === 'nursing' ? 'primary' : 'outline'}
+            <div className="text-center">
+              <div className="text-5xl mb-3">📅</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-1">Schedule</h3>
+              <p className="text-sm text-gray-600">View feeding history</p>
+            </div>
+          </button>
+
+          <button
             onClick={() => setMode('nursing')}
-            className="flex-1"
+            className={`rounded-3xl p-6 transition-all ${
+              mode === 'nursing'
+                ? 'bg-gradient-to-br from-baby-pink to-pink-200 shadow-lg scale-105'
+                : 'bg-white hover:shadow-md hover:scale-102'
+            }`}
           >
-            🤱 Nursing
-          </Button>
-          <Button
-            variant={mode === 'bottle' ? 'primary' : 'outline'}
+            <div className="text-center">
+              <div className="text-5xl mb-3">🤱</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-1">Nursing</h3>
+              <p className="text-sm text-gray-600">Track breastfeeding</p>
+            </div>
+          </button>
+
+          <button
             onClick={() => setMode('bottle')}
-            className="flex-1"
+            className={`rounded-3xl p-6 transition-all ${
+              mode === 'bottle'
+                ? 'bg-gradient-to-br from-baby-blue to-blue-200 shadow-lg scale-105'
+                : 'bg-white hover:shadow-md hover:scale-102'
+            }`}
           >
-            🍼 Bottle
-          </Button>
+            <div className="text-center">
+              <div className="text-5xl mb-3">🍼</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-1">Bottle</h3>
+              <p className="text-sm text-gray-600">Log bottle feeding</p>
+            </div>
+          </button>
         </div>
 
         {/* Date Filter - only show in schedule mode */}

@@ -6,6 +6,7 @@ import { useActiveBaby } from '@/lib/hooks/useActiveBaby'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { ImageUpload } from '@/components/ui/ImageUpload'
 import { TimerState, BreastSide } from '@/lib/types/feeding'
 import toast from 'react-hot-toast'
 
@@ -24,6 +25,7 @@ export function NursingTimer({ onComplete }: { onComplete?: () => void }) {
     startedAt: null,
     lastUpdated: Date.now(),
   })
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
 
   // Load timer state from localStorage on mount
   useEffect(() => {
@@ -130,6 +132,7 @@ export function NursingTimer({ onComplete }: { onComplete?: () => void }) {
         right_duration_minutes: Math.floor(timerState.rightDuration / 60),
         started_at: timerState.startedAt || new Date().toISOString(),
         ended_at: new Date().toISOString(),
+        photo_url: photoUrl,
       })
 
       if (error) throw error
@@ -145,6 +148,7 @@ export function NursingTimer({ onComplete }: { onComplete?: () => void }) {
         startedAt: null,
         lastUpdated: Date.now(),
       })
+      setPhotoUrl(null)
       localStorage.removeItem(STORAGE_KEY)
 
       onComplete?.()
@@ -163,6 +167,7 @@ export function NursingTimer({ onComplete }: { onComplete?: () => void }) {
         startedAt: null,
         lastUpdated: Date.now(),
       })
+      setPhotoUrl(null)
       localStorage.removeItem(STORAGE_KEY)
     }
   }
@@ -235,6 +240,22 @@ export function NursingTimer({ onComplete }: { onComplete?: () => void }) {
             <Button onClick={switchSide} variant="secondary" className="flex-1">
               Switch to {timerState.activeSide === 'left' ? 'Right' : 'Left'}
             </Button>
+          </div>
+        )}
+
+        {/* Photo Upload */}
+        {hasAnyDuration && !timerState.isActive && user && (
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5 text-left">
+              Photo (Optional)
+            </label>
+            <ImageUpload
+              userId={user.id}
+              onUploadComplete={setPhotoUrl}
+              currentImageUrl={photoUrl}
+              onRemove={() => setPhotoUrl(null)}
+              label="Add Photo"
+            />
           </div>
         )}
 

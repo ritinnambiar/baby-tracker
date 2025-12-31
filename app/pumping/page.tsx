@@ -6,12 +6,12 @@ import { usePumping } from '@/lib/hooks/usePumping'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageTransition } from '@/components/ui/PageTransition'
-import { DateFilter, DateRange } from '@/components/ui/DateFilter'
 import { PumpingForm } from '@/components/pumping/PumpingForm'
 import { PumpingCard } from '@/components/pumping/PumpingCard'
 import { PumpingLog } from '@/lib/types/pumping'
-import { format, isToday, isYesterday, parseISO, isWithinInterval } from 'date-fns'
+import { format, isToday, isYesterday, parseISO } from 'date-fns'
 import Link from 'next/link'
+import { TimelineCalendar } from '@/components/ui/TimelineCalendar'
 
 type PumpingMode = 'schedule' | 'log'
 
@@ -31,34 +31,17 @@ export default function PumpingPage() {
   const { activeBaby } = useActiveBaby()
   const { pumpingSessions, loading, refreshPumpingSessions } = usePumping(activeBaby?.id || null)
   const [mode, setMode] = useState<PumpingMode>('schedule')
-  const [dateRange, setDateRange] = useState<DateRange>({
-    start: new Date(2000, 0, 1),
-    end: new Date(),
-    label: 'All Time',
-  })
 
   const handleComplete = () => {
     refreshPumpingSessions()
     setMode('schedule')
   }
 
-  const handleDateFilterChange = (range: DateRange) => {
-    setDateRange(range)
-  }
-
-  // Prepare filtered sessions
-  const filteredSessions = useMemo(() => {
-    return pumpingSessions.filter((session) => {
-      const sessionDate = parseISO(session.started_at)
-      return isWithinInterval(sessionDate, { start: dateRange.start, end: dateRange.end })
-    })
-  }, [pumpingSessions, dateRange])
-
   // Group pumping sessions by date
   const groupedPumping = useMemo(() => {
     const groups: { [key: string]: GroupedPumping } = {}
 
-    filteredSessions.forEach((session) => {
+    pumpingSessions.forEach((session) => {
       const date = format(parseISO(session.started_at), 'yyyy-MM-dd')
 
       if (!groups[date]) {
@@ -92,7 +75,24 @@ export default function PumpingPage() {
     })
 
     return Object.values(groups).sort((a, b) => b.date.localeCompare(a.date))
-  }, [filteredSessions])
+  }, [pumpingSessions])
+
+  // Convert pumping sessions to timeline events
+  const timelineEvents = useMemo(() => {
+    return pumpingSessions.map(session => {
+      const totalAmount = session.total_amount_ml || 0
+
+      return {
+        id: session.id,
+        startTime: session.started_at,
+        endTime: session.ended_at || undefined,
+        title: `${totalAmount}ml`,
+        subtitle: `Pumping - ${totalAmount}ml total`,
+        color: 'bg-baby-purple',
+        icon: '💧',
+      }
+    })
+  }, [pumpingSessions])
 
   if (!activeBaby) {
     return (
@@ -165,13 +165,6 @@ export default function PumpingPage() {
           </button>
         </div>
 
-        {/* Date Filter - only show in schedule mode */}
-        {mode === 'schedule' && (
-          <div className="mb-6">
-            <DateFilter onFilterChange={handleDateFilterChange} initialFilter="all" />
-          </div>
-        )}
-
         {/* Content based on mode */}
         {mode === 'log' && <PumpingForm onComplete={handleComplete} />}
 
@@ -191,60 +184,60 @@ export default function PumpingPage() {
                 </div>
               </Card>
             ) : (
-              <div className="space-y-6">
-                {groupedPumping.map((group) => (
-                  <div key={group.date}>
-                    {/* Date Header with Daily Stats */}
-                    <div className="bg-white rounded-3xl shadow-soft p-4 mb-4">
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                        <div>
-                          <h2 className="text-xl font-bold text-gray-800">{group.displayDate}</h2>
-                          <p className="text-sm text-gray-600">
-                            {group.stats.totalSessions} session{group.stats.totalSessions !== 1 ? 's' : ''}
-                          </p>
-                        </div>
-
-                        {/* Daily Summary Stats */}
-                        <div className="flex gap-2">
-                          <div className="bg-baby-purple rounded-xl px-3 py-2 text-center">
-                            <div className="text-xs text-gray-600">Total</div>
-                            <div className="text-sm font-semibold text-primary-600">
-                              💧 {group.stats.totalAmount}ml
-                            </div>
-                          </div>
-                          {group.stats.leftAmount > 0 && (
-                            <div className="bg-baby-pink rounded-xl px-3 py-2 text-center">
-                              <div className="text-xs text-gray-600">Left</div>
-                              <div className="text-sm font-semibold text-primary-600">
-                                {group.stats.leftAmount}ml
-                              </div>
-                            </div>
-                          )}
-                          {group.stats.rightAmount > 0 && (
-                            <div className="bg-baby-blue rounded-xl px-3 py-2 text-center">
-                              <div className="text-xs text-gray-600">Right</div>
-                              <div className="text-sm font-semibold text-accent-600">
-                                {group.stats.rightAmount}ml
-                              </div>
-                            </div>
-                          )}
-                        </div>
+              <div className="space-y-4">
+                {/* Summary Stats */}
+                <Card>
+                  <div className="mb-3 text-center">
+                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      📊 All Time Summary
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary-600">
+                        {pumpingSessions.length}
                       </div>
+                      <div className="text-sm text-gray-600">Total Sessions</div>
                     </div>
-
-                    {/* Pumping Timeline */}
-                    <div className="space-y-3 ml-4">
-                      {group.sessions.map((session) => (
-                        <div key={session.id} className="relative pl-6">
-                          {/* Timeline dot */}
-                          <div className="absolute left-0 top-3 w-3 h-3 rounded-full bg-primary-500" />
-                          <div className="absolute left-1.5 top-6 bottom-0 w-0.5 bg-gray-200" />
-                          <PumpingCard pumping={session} />
-                        </div>
-                      ))}
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-purple-600">
+                        {pumpingSessions.reduce((sum, s) => sum + (s.total_amount_ml || 0), 0)}ml
+                      </div>
+                      <div className="text-sm text-gray-600">💧 Total Volume</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-pink-600">
+                        {pumpingSessions.reduce((sum, s) => sum + (s.left_amount_ml || 0), 0)}ml
+                      </div>
+                      <div className="text-sm text-gray-600">Left Breast</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-blue-600">
+                        {pumpingSessions.reduce((sum, s) => sum + (s.right_amount_ml || 0), 0)}ml
+                      </div>
+                      <div className="text-sm text-gray-600">Right Breast</div>
                     </div>
                   </div>
-                ))}
+                </Card>
+
+                {/* Calendar Timeline */}
+                <Card>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">
+                      📅 Calendar Timeline View
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Scroll horizontally to view different days. Click on any block to see full details.
+                    </p>
+                  </div>
+                  <TimelineCalendar
+                    events={timelineEvents}
+                    dateRange={{ start: new Date(2000, 0, 1), end: new Date() }}
+                    onEventClick={(event) => {
+                      console.log('Clicked event:', event)
+                    }}
+                  />
+                </Card>
               </div>
             )}
           </>

@@ -6,12 +6,12 @@ import { useDiapers } from '@/lib/hooks/useDiapers'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageTransition } from '@/components/ui/PageTransition'
-import { DateFilter, DateRange } from '@/components/ui/DateFilter'
 import { DiaperForm } from '@/components/diaper/DiaperForm'
 import { DiaperCard } from '@/components/diaper/DiaperCard'
 import { DiaperChange } from '@/lib/types/diaper'
-import { format, isToday, isYesterday, parseISO, isWithinInterval } from 'date-fns'
+import { format, isToday, isYesterday, parseISO } from 'date-fns'
 import Link from 'next/link'
+import { TimelineCalendar } from '@/components/ui/TimelineCalendar'
 
 type DiaperMode = 'schedule' | 'log'
 
@@ -31,34 +31,17 @@ export default function DiaperPage() {
   const { activeBaby } = useActiveBaby()
   const { diapers, loading, refreshDiapers } = useDiapers(activeBaby?.id || null)
   const [mode, setMode] = useState<DiaperMode>('schedule')
-  const [dateRange, setDateRange] = useState<DateRange>({
-    start: new Date(2000, 0, 1),
-    end: new Date(),
-    label: 'All Time',
-  })
 
   const handleComplete = () => {
     refreshDiapers()
     setMode('schedule')
   }
 
-  const handleDateFilterChange = (range: DateRange) => {
-    setDateRange(range)
-  }
-
-  // Prepare filtered diapers
-  const filteredDiapers = useMemo(() => {
-    return diapers.filter((diaper) => {
-      const diaperDate = parseISO(diaper.changed_at)
-      return isWithinInterval(diaperDate, { start: dateRange.start, end: dateRange.end })
-    })
-  }, [diapers, dateRange])
-
   // Group diapers by date
   const groupedDiapers = useMemo(() => {
     const groups: { [key: string]: GroupedDiapers } = {}
 
-    filteredDiapers.forEach((diaper) => {
+    diapers.forEach((diaper) => {
       const date = format(parseISO(diaper.changed_at), 'yyyy-MM-dd')
 
       if (!groups[date]) {
@@ -97,7 +80,40 @@ export default function DiaperPage() {
     })
 
     return Object.values(groups).sort((a, b) => b.date.localeCompare(a.date))
-  }, [filteredDiapers])
+  }, [diapers])
+
+  // Convert diapers to timeline events
+  const timelineEvents = useMemo(() => {
+    return diapers.map(diaper => {
+      let type = ''
+      let color = ''
+      let icon = ''
+
+      if (diaper.is_wet && diaper.is_dirty) {
+        type = 'Both'
+        color = 'bg-baby-yellow'
+        icon = '💧💩'
+      } else if (diaper.is_wet) {
+        type = 'Wet'
+        color = 'bg-baby-blue'
+        icon = '💧'
+      } else if (diaper.is_dirty) {
+        type = 'Dirty'
+        color = 'bg-baby-peach'
+        icon = '💩'
+      }
+
+      return {
+        id: diaper.id,
+        startTime: diaper.changed_at,
+        endTime: undefined, // Instant event
+        title: type,
+        subtitle: `Diaper Change - ${type}`,
+        color,
+        icon,
+      }
+    })
+  }, [diapers])
 
   if (!activeBaby) {
     return (
@@ -170,13 +186,6 @@ export default function DiaperPage() {
           </button>
         </div>
 
-        {/* Date Filter - only show in schedule mode */}
-        {mode === 'schedule' && (
-          <div className="mb-6">
-            <DateFilter onFilterChange={handleDateFilterChange} initialFilter="all" />
-          </div>
-        )}
-
         {/* Content based on mode */}
         {mode === 'log' && <DiaperForm onComplete={handleComplete} />}
 
@@ -196,62 +205,60 @@ export default function DiaperPage() {
                 </div>
               </Card>
             ) : (
-              <div className="space-y-6">
-                {groupedDiapers.map((group) => (
-                  <div key={group.date}>
-                    {/* Date Header with Daily Stats */}
-                    <div className="bg-white rounded-3xl shadow-soft p-4 mb-4">
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                        <div>
-                          <h2 className="text-xl font-bold text-gray-800">{group.displayDate}</h2>
-                          <p className="text-sm text-gray-600">
-                            {group.stats.totalChanges} change{group.stats.totalChanges !== 1 ? 's' : ''}
-                          </p>
-                        </div>
-
-                        {/* Daily Summary Stats */}
-                        <div className="flex gap-2">
-                          {group.stats.wetCount > 0 && (
-                            <div className="bg-baby-blue rounded-xl px-3 py-2 text-center">
-                              <div className="text-xs text-gray-600">Wet</div>
-                              <div className="text-sm font-semibold text-primary-600">
-                                💧 {group.stats.wetCount}
-                              </div>
-                            </div>
-                          )}
-                          {group.stats.dirtyCount > 0 && (
-                            <div className="bg-baby-peach rounded-xl px-3 py-2 text-center">
-                              <div className="text-xs text-gray-600">Dirty</div>
-                              <div className="text-sm font-semibold text-accent-600">
-                                💩 {group.stats.dirtyCount}
-                              </div>
-                            </div>
-                          )}
-                          {group.stats.bothCount > 0 && (
-                            <div className="bg-baby-yellow rounded-xl px-3 py-2 text-center">
-                              <div className="text-xs text-gray-600">Both</div>
-                              <div className="text-sm font-semibold text-gray-700">
-                                💧💩 {group.stats.bothCount}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+              <div className="space-y-4">
+                {/* Summary Stats */}
+                <Card>
+                  <div className="mb-3 text-center">
+                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      📊 All Time Summary
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary-600">
+                        {diapers.length}
                       </div>
+                      <div className="text-sm text-gray-600">Total Changes</div>
                     </div>
-
-                    {/* Diaper Timeline */}
-                    <div className="space-y-3 ml-4">
-                      {group.diapers.map((diaper) => (
-                        <div key={diaper.id} className="relative pl-6">
-                          {/* Timeline dot */}
-                          <div className="absolute left-0 top-3 w-3 h-3 rounded-full bg-primary-500" />
-                          <div className="absolute left-1.5 top-6 bottom-0 w-0.5 bg-gray-200" />
-                          <DiaperCard diaper={diaper} />
-                        </div>
-                      ))}
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-blue-600">
+                        {diapers.filter(d => d.is_wet && !d.is_dirty).length}
+                      </div>
+                      <div className="text-sm text-gray-600">💧 Wet</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-orange-600">
+                        {diapers.filter(d => !d.is_wet && d.is_dirty).length}
+                      </div>
+                      <div className="text-sm text-gray-600">💩 Dirty</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-yellow-600">
+                        {diapers.filter(d => d.is_wet && d.is_dirty).length}
+                      </div>
+                      <div className="text-sm text-gray-600">💧💩 Both</div>
                     </div>
                   </div>
-                ))}
+                </Card>
+
+                {/* Calendar Timeline */}
+                <Card>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">
+                      📅 Calendar Timeline View
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Scroll horizontally to view different days. Click on any block to see full details.
+                    </p>
+                  </div>
+                  <TimelineCalendar
+                    events={timelineEvents}
+                    dateRange={{ start: new Date(2000, 0, 1), end: new Date() }}
+                    onEventClick={(event) => {
+                      console.log('Clicked event:', event)
+                    }}
+                  />
+                </Card>
               </div>
             )}
           </>

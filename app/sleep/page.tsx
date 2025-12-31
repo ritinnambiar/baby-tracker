@@ -6,13 +6,13 @@ import { useSleep } from '@/lib/hooks/useSleep'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageTransition } from '@/components/ui/PageTransition'
-import { DateFilter, DateRange } from '@/components/ui/DateFilter'
 import { SleepTimer } from '@/components/sleep/SleepTimer'
 import { SleepForm } from '@/components/sleep/SleepForm'
 import { SleepCard } from '@/components/sleep/SleepCard'
 import { SleepLog } from '@/lib/types/sleep'
-import { format, isToday, isYesterday, parseISO, isWithinInterval } from 'date-fns'
+import { format, isToday, isYesterday, parseISO } from 'date-fns'
 import Link from 'next/link'
+import { TimelineCalendar } from '@/components/ui/TimelineCalendar'
 
 type SleepMode = 'schedule' | 'timer' | 'manual'
 
@@ -33,34 +33,17 @@ export default function SleepPage() {
   const { activeBaby } = useActiveBaby()
   const { sleeps, loading, refreshSleeps } = useSleep(activeBaby?.id || null)
   const [mode, setMode] = useState<SleepMode>('schedule')
-  const [dateRange, setDateRange] = useState<DateRange>({
-    start: new Date(2000, 0, 1),
-    end: new Date(),
-    label: 'All Time',
-  })
 
   const handleComplete = () => {
     refreshSleeps()
     setMode('schedule')
   }
 
-  const handleDateFilterChange = (range: DateRange) => {
-    setDateRange(range)
-  }
-
-  // Prepare filtered sleeps
-  const filteredSleeps = useMemo(() => {
-    return sleeps.filter((sleep) => {
-      const sleepDate = parseISO(sleep.started_at)
-      return isWithinInterval(sleepDate, { start: dateRange.start, end: dateRange.end })
-    })
-  }, [sleeps, dateRange])
-
   // Group sleeps by date
   const groupedSleeps = useMemo(() => {
     const groups: { [key: string]: GroupedSleeps } = {}
 
-    filteredSleeps.forEach((sleep) => {
+    sleeps.forEach((sleep) => {
       const date = format(parseISO(sleep.started_at), 'yyyy-MM-dd')
 
       if (!groups[date]) {
@@ -100,7 +83,7 @@ export default function SleepPage() {
     })
 
     return Object.values(groups).sort((a, b) => b.date.localeCompare(a.date))
-  }, [filteredSleeps])
+  }, [sleeps])
 
   const formatDuration = (minutes: number): string => {
     if (minutes < 60) return `${minutes}m`
@@ -109,6 +92,23 @@ export default function SleepPage() {
     if (mins === 0) return `${hours}h`
     return `${hours}h ${mins}m`
   }
+
+  // Convert sleeps to timeline events
+  const timelineEvents = useMemo(() => {
+    return sleeps.map(sleep => {
+      const duration = sleep.duration_minutes || 0
+
+      return {
+        id: sleep.id,
+        startTime: sleep.started_at,
+        endTime: sleep.ended_at || undefined,
+        title: duration > 0 ? formatDuration(duration) : 'Active',
+        subtitle: `${sleep.sleep_type === 'nap' ? 'Nap' : 'Night Sleep'} - ${formatDuration(duration)}`,
+        color: sleep.sleep_type === 'nap' ? 'bg-baby-blue' : 'bg-baby-purple',
+        icon: sleep.sleep_type === 'nap' ? '😴' : '🌙',
+      }
+    })
+  }, [sleeps])
 
   if (!activeBaby) {
     return (
@@ -196,13 +196,6 @@ export default function SleepPage() {
           </button>
         </div>
 
-        {/* Date Filter - only show in schedule mode */}
-        {mode === 'schedule' && (
-          <div className="mb-6">
-            <DateFilter onFilterChange={handleDateFilterChange} initialFilter="all" />
-          </div>
-        )}
-
         {/* Content based on mode */}
         {mode === 'timer' && <SleepTimer onComplete={handleComplete} />}
 
@@ -229,54 +222,60 @@ export default function SleepPage() {
                 </div>
               </Card>
             ) : (
-              <div className="space-y-6">
-                {groupedSleeps.map((group) => (
-                  <div key={group.date}>
-                    {/* Date Header with Daily Stats */}
-                    <div className="bg-white rounded-3xl shadow-soft p-4 mb-4">
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                        <div>
-                          <h2 className="text-xl font-bold text-gray-800">{group.displayDate}</h2>
-                          <p className="text-sm text-gray-600">
-                            {group.stats.totalSleeps} sleep session{group.stats.totalSleeps !== 1 ? 's' : ''}
-                          </p>
-                        </div>
-
-                        {/* Daily Summary Stats */}
-                        <div className="flex gap-2">
-                          {group.stats.napCount > 0 && (
-                            <div className="bg-baby-blue rounded-xl px-3 py-2 text-center">
-                              <div className="text-xs text-gray-600">Naps</div>
-                              <div className="text-sm font-semibold text-primary-600">
-                                {group.stats.napCount}x · {formatDuration(group.stats.totalNapMinutes)}
-                              </div>
-                            </div>
-                          )}
-                          {group.stats.nightCount > 0 && (
-                            <div className="bg-baby-purple rounded-xl px-3 py-2 text-center">
-                              <div className="text-xs text-gray-600">Night</div>
-                              <div className="text-sm font-semibold text-accent-600">
-                                {group.stats.nightCount}x · {formatDuration(group.stats.totalNightMinutes)}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+              <div className="space-y-4">
+                {/* Summary Stats */}
+                <Card>
+                  <div className="mb-3 text-center">
+                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      📊 All Time Summary
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary-600">
+                        {sleeps.length}
                       </div>
+                      <div className="text-sm text-gray-600">Total Sessions</div>
                     </div>
-
-                    {/* Sleep Timeline */}
-                    <div className="space-y-3 ml-4">
-                      {group.sleeps.map((sleep) => (
-                        <div key={sleep.id} className="relative pl-6">
-                          {/* Timeline dot */}
-                          <div className="absolute left-0 top-3 w-3 h-3 rounded-full bg-primary-500" />
-                          <div className="absolute left-1.5 top-6 bottom-0 w-0.5 bg-gray-200" />
-                          <SleepCard sleep={sleep} />
-                        </div>
-                      ))}
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-blue-600">
+                        {sleeps.filter(s => s.sleep_type === 'nap').length}
+                      </div>
+                      <div className="text-sm text-gray-600">😴 Naps</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-purple-600">
+                        {sleeps.filter(s => s.sleep_type === 'night').length}
+                      </div>
+                      <div className="text-sm text-gray-600">🌙 Night Sleep</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-accent-600">
+                        {formatDuration(sleeps.reduce((sum, s) => sum + (s.duration_minutes || 0), 0))}
+                      </div>
+                      <div className="text-sm text-gray-600">Total Sleep</div>
                     </div>
                   </div>
-                ))}
+                </Card>
+
+                {/* Calendar Timeline */}
+                <Card>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">
+                      📅 Calendar Timeline View
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Scroll horizontally to view different days. Click on any block to see full details.
+                    </p>
+                  </div>
+                  <TimelineCalendar
+                    events={timelineEvents}
+                    dateRange={{ start: new Date(2000, 0, 1), end: new Date() }}
+                    onEventClick={(event) => {
+                      console.log('Clicked event:', event)
+                    }}
+                  />
+                </Card>
               </div>
             )}
           </>

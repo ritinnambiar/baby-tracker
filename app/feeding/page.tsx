@@ -6,13 +6,13 @@ import { useFeedings } from '@/lib/hooks/useFeedings'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageTransition } from '@/components/ui/PageTransition'
-import { DateFilter, DateRange } from '@/components/ui/DateFilter'
 import { NursingTimer } from '@/components/feeding/NursingTimer'
 import { BottleFeedingForm } from '@/components/feeding/BottleFeedingForm'
 import { FeedingCard } from '@/components/feeding/FeedingCard'
 import { FeedingLog } from '@/lib/types/feeding'
-import { format, isToday, isYesterday, parseISO, isWithinInterval } from 'date-fns'
+import { format, isToday, isYesterday, parseISO } from 'date-fns'
 import Link from 'next/link'
+import { TimelineCalendar } from '@/components/ui/TimelineCalendar'
 
 type FeedingMode = 'schedule' | 'nursing' | 'bottle'
 
@@ -33,34 +33,17 @@ export default function FeedingPage() {
   const { activeBaby } = useActiveBaby()
   const { feedings, loading, refreshFeedings } = useFeedings(activeBaby?.id || null)
   const [mode, setMode] = useState<FeedingMode>('schedule')
-  const [dateRange, setDateRange] = useState<DateRange>({
-    start: new Date(2000, 0, 1),
-    end: new Date(),
-    label: 'All Time',
-  })
 
   const handleComplete = () => {
     refreshFeedings()
     setMode('schedule')
   }
 
-  const handleDateFilterChange = (range: DateRange) => {
-    setDateRange(range)
-  }
-
-  // Prepare filtered feedings
-  const filteredFeedings = useMemo(() => {
-    return feedings.filter((feeding) => {
-      const feedingDate = parseISO(feeding.started_at)
-      return isWithinInterval(feedingDate, { start: dateRange.start, end: dateRange.end })
-    })
-  }, [feedings, dateRange])
-
   // Group feedings by date
   const groupedFeedings = useMemo(() => {
     const groups: { [key: string]: GroupedFeedings } = {}
 
-    filteredFeedings.forEach((feeding) => {
+    feedings.forEach((feeding) => {
       const date = format(parseISO(feeding.started_at), 'yyyy-MM-dd')
 
       if (!groups[date]) {
@@ -101,7 +84,31 @@ export default function FeedingPage() {
     })
 
     return Object.values(groups).sort((a, b) => b.date.localeCompare(a.date))
-  }, [filteredFeedings])
+  }, [feedings])
+
+  // Convert feedings to timeline events
+  const timelineEvents = useMemo(() => {
+    return feedings.map(feeding => {
+      const isBottle = feeding.feeding_type === 'bottle'
+      const duration = isBottle
+        ? 0
+        : (feeding.left_duration_minutes || 0) + (feeding.right_duration_minutes || 0)
+
+      return {
+        id: feeding.id,
+        startTime: feeding.started_at,
+        endTime: duration > 0 ? feeding.ended_at : undefined,
+        title: isBottle
+          ? `${feeding.amount_ml}ml`
+          : `${duration}m`,
+        subtitle: isBottle
+          ? `Bottle - ${feeding.amount_ml}ml`
+          : `Nursing - ${feeding.breast_side}`,
+        color: isBottle ? 'bg-baby-blue' : 'bg-baby-pink',
+        icon: isBottle ? '🍼' : '🤱',
+      }
+    })
+  }, [feedings])
 
   if (!activeBaby) {
     return (
@@ -189,13 +196,6 @@ export default function FeedingPage() {
           </button>
         </div>
 
-        {/* Date Filter - only show in schedule mode */}
-        {mode === 'schedule' && (
-          <div className="mb-6">
-            <DateFilter onFilterChange={handleDateFilterChange} initialFilter="all" />
-          </div>
-        )}
-
         {/* Content based on mode */}
         {mode === 'nursing' && <NursingTimer onComplete={handleComplete} />}
 
@@ -222,54 +222,61 @@ export default function FeedingPage() {
                 </div>
               </Card>
             ) : (
-              <div className="space-y-6">
-                {groupedFeedings.map((group) => (
-                  <div key={group.date}>
-                    {/* Date Header with Daily Stats */}
-                    <div className="bg-white rounded-3xl shadow-soft p-4 mb-4">
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                        <div>
-                          <h2 className="text-xl font-bold text-gray-800">{group.displayDate}</h2>
-                          <p className="text-sm text-gray-600">
-                            {group.stats.totalFeedings} feeding{group.stats.totalFeedings !== 1 ? 's' : ''}
-                          </p>
-                        </div>
-
-                        {/* Daily Summary Stats */}
-                        <div className="flex gap-2">
-                          {group.stats.nursingCount > 0 && (
-                            <div className="bg-baby-pink rounded-xl px-3 py-2 text-center">
-                              <div className="text-xs text-gray-600">Nursing</div>
-                              <div className="text-sm font-semibold text-primary-600">
-                                {group.stats.nursingCount}x · {group.stats.totalNursingMinutes}m
-                              </div>
-                            </div>
-                          )}
-                          {group.stats.bottleCount > 0 && (
-                            <div className="bg-baby-blue rounded-xl px-3 py-2 text-center">
-                              <div className="text-xs text-gray-600">Bottle</div>
-                              <div className="text-sm font-semibold text-accent-600">
-                                {group.stats.bottleCount}x · {group.stats.totalBottleMl}ml
-                              </div>
-                            </div>
-                          )}
-                        </div>
+              <div className="space-y-4">
+                {/* Summary Stats */}
+                <Card>
+                  <div className="mb-3 text-center">
+                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      📊 All Time Summary
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary-600">
+                        {feedings.length}
                       </div>
+                      <div className="text-sm text-gray-600">Total Feedings</div>
                     </div>
-
-                    {/* Feedings Timeline */}
-                    <div className="space-y-3 ml-4">
-                      {group.feedings.map((feeding) => (
-                        <div key={feeding.id} className="relative pl-6">
-                          {/* Timeline dot */}
-                          <div className="absolute left-0 top-3 w-3 h-3 rounded-full bg-primary-500" />
-                          <div className="absolute left-1.5 top-6 bottom-0 w-0.5 bg-gray-200" />
-                          <FeedingCard feeding={feeding} />
-                        </div>
-                      ))}
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-pink-600">
+                        {feedings.filter(f => f.feeding_type === 'breast').length}
+                      </div>
+                      <div className="text-sm text-gray-600">🤱 Nursing</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-blue-600">
+                        {feedings.filter(f => f.feeding_type === 'bottle').length}
+                      </div>
+                      <div className="text-sm text-gray-600">🍼 Bottle</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-accent-600">
+                        {feedings.filter(f => f.feeding_type === 'bottle').reduce((sum, f) => sum + (f.amount_ml || 0), 0)}ml
+                      </div>
+                      <div className="text-sm text-gray-600">Total Volume</div>
                     </div>
                   </div>
-                ))}
+                </Card>
+
+                {/* Calendar Timeline */}
+                <Card>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">
+                      📅 Calendar Timeline View
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Scroll horizontally to view different days. Click on any block to see full details.
+                    </p>
+                  </div>
+                  <TimelineCalendar
+                    events={timelineEvents}
+                    dateRange={{ start: new Date(2000, 0, 1), end: new Date() }}
+                    onEventClick={(event) => {
+                      // Find the feeding by ID and you could show a modal or expanded view
+                      console.log('Clicked event:', event)
+                    }}
+                  />
+                </Card>
               </div>
             )}
           </>

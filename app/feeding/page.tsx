@@ -108,6 +108,7 @@ export default function FeedingPage() {
           : `Nursing - ${feeding.breast_side}`,
         color: isBottle ? 'bg-baby-blue' : 'bg-baby-pink',
         icon: isBottle ? '🍼' : '🤱',
+        photoUrl: feeding.photo_url,
       }
     })
   }, [feedings])

@@ -113,6 +113,7 @@ export default function DiaperPage() {
         subtitle: `Diaper Change - ${type}`,
         color,
         icon,
+        photoUrl: diaper.photo_url,
       }
     })
   }, [diapers])

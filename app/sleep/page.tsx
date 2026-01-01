@@ -108,6 +108,7 @@ export default function SleepPage() {
         subtitle: `${sleep.sleep_type === 'nap' ? 'Nap' : 'Night Sleep'} - ${formatDuration(duration)}`,
         color: sleep.sleep_type === 'nap' ? 'bg-gray-800' : 'bg-gray-900',
         icon: sleep.sleep_type === 'nap' ? '😴' : '🌙',
+        photoUrl: sleep.photo_url,
       }
     })
   }, [sleeps])

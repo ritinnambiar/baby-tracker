@@ -12,6 +12,7 @@ interface TimelineEvent {
   subtitle?: string
   color: string
   icon?: string
+  photoUrl?: string | null
 }
 
 interface TimelineCalendarProps {
@@ -223,7 +224,7 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
       {/* Event Detail Card */}
       {selectedEvent && (
         <Card>
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between mb-2">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 {selectedEvent.icon && <span className="text-2xl">{selectedEvent.icon}</span>}
@@ -251,6 +252,15 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
               ✕
             </button>
           </div>
+          {selectedEvent.photoUrl && (
+            <div className="mt-3">
+              <img
+                src={selectedEvent.photoUrl}
+                alt="Event photo"
+                className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 dark:border-gray-700"
+              />
+            </div>
+          )}
         </Card>
       )}
     </div>

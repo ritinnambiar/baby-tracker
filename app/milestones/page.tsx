@@ -264,10 +264,14 @@ export default function MilestonesPage() {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">🎯 Milestones</h1>
+              <Link href="/dashboard" className="inline-block">
+                <h1 className="text-4xl font-bold text-primary-600 mb-2 hover:text-primary-700 transition-colors cursor-pointer drop-shadow-md">
+                  Baby Tracker 👶
+                </h1>
+              </Link>
               {activeBaby && (
                 <p className="text-gray-800 font-medium dark:text-gray-400">
-                  <span className="text-primary-600 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
+                  🎯 Milestones for <span className="text-primary-600 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
                 </p>
               )}
             </div>

@@ -81,40 +81,17 @@ export default function MilestonesPage() {
     fetchMilestones()
   }, [activeBaby, supabase])
 
-  // Helper function to get age for sorting
-  const getMilestoneAge = (milestone: Milestone): number => {
-    // Find matching template milestone
-    const template = COMMON_MILESTONES.find(m => m.title === milestone.milestone_title)
-    if (template) {
-      return template.ageMonthsMin
-    }
-    // Fallback: try to extract from notes
-    const match = milestone.notes?.match(/Age range: (\d+)-/)
-    if (match) {
-      return parseInt(match[1], 10)
-    }
-    // If no age found, use a high number to put custom milestones at the end
-    return 999
-  }
-
   const filteredMilestones =
     selectedCategory === 'all'
       ? milestones
       : milestones.filter((m) => m.milestone_category === selectedCategory)
 
-  // Sort all milestones by age, regardless of completion status
-  const sortedMilestones = [...filteredMilestones].sort((a, b) => {
-    return getMilestoneAge(a) - getMilestoneAge(b)
-  })
-
-  const achievedMilestones = sortedMilestones.filter(m => m.achieved_date)
-  const pendingMilestones = sortedMilestones.filter(m => !m.achieved_date)
+  const achievedMilestones = filteredMilestones.filter(m => m.achieved_date)
+  const pendingMilestones = filteredMilestones.filter(m => !m.achieved_date)
 
   const groupedByCategory = MILESTONE_CATEGORIES.map((cat) => ({
     ...cat,
-    milestones: milestones
-      .filter((m) => m.milestone_category === cat.value)
-      .sort((a, b) => getMilestoneAge(a) - getMilestoneAge(b)),
+    milestones: milestones.filter((m) => m.milestone_category === cat.value),
   }))
 
   const babyAgeMonths = activeBaby
@@ -153,7 +130,7 @@ export default function MilestonesPage() {
 
       toast.success('Milestones initialized! Mark them as achieved when your baby reaches them.')
 
-      // Refresh data
+      // Refresh data to get newly initialized milestones
       const { data } = await supabase
         .from('milestones')
         .select('*')
@@ -198,14 +175,12 @@ export default function MilestonesPage() {
         notes: '',
       })
 
-      // Refresh data
-      const { data } = await supabase
-        .from('milestones')
-        .select('*')
-        .eq('baby_id', activeBaby.id)
-        .order('created_at', { ascending: false })
-
-      setMilestones(data || [])
+      // Update local state instead of refetching to preserve order
+      setMilestones(prev => prev.map(m =>
+        m.id === selectedMilestone.id
+          ? { ...m, achieved_date: completionFormData.achieved_date, age_months: ageMonths, notes: completionFormData.notes || m.notes }
+          : m
+      ))
     } catch (error) {
       toast.error('Failed to mark milestone as complete')
     }
@@ -227,14 +202,12 @@ export default function MilestonesPage() {
 
       toast.success('Milestone unmarked')
 
-      // Refresh data
-      const { data } = await supabase
-        .from('milestones')
-        .select('*')
-        .eq('baby_id', activeBaby.id)
-        .order('created_at', { ascending: false })
-
-      setMilestones(data || [])
+      // Update local state instead of refetching to preserve order
+      setMilestones(prev => prev.map(m =>
+        m.id === id
+          ? { ...m, achieved_date: null, age_months: null }
+          : m
+      ))
     } catch (error) {
       toast.error('Failed to undo milestone')
     }
@@ -371,7 +344,7 @@ export default function MilestonesPage() {
                 </Card>
               ) : (
                 <div className="space-y-4">
-                  {sortedMilestones.map((milestone) => (
+                  {filteredMilestones.map((milestone) => (
                     <div
                       key={milestone.id}
                       className={`p-4 rounded-xl border-2 transition-all ${

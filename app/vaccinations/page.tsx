@@ -210,13 +210,20 @@ export default function VaccinationsPage() {
     try {
       const { error } = await supabase.from('vaccinations').insert({
         baby_id: activeBaby.id,
-        user_id: user.id,
         vaccine_name: newVaccineData.vaccine_name,
         age_months: newVaccineData.age_months,
         is_completed: false,
+        administered_date: null,
+        notes: null,
+        batch_number: null,
+        administered_by: null,
       })
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error:', error)
+        toast.error(error.message || 'Failed to add vaccine')
+        return
+      }
 
       toast.success('Custom vaccine added!')
       setShowAddVaccineModal(false)
@@ -232,7 +239,8 @@ export default function VaccinationsPage() {
       setVaccinations(data || [])
     } catch (error) {
       console.error('Error adding vaccine:', error)
-      toast.error('Failed to add vaccine')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to add vaccine'
+      toast.error(errorMessage)
     }
   }
 

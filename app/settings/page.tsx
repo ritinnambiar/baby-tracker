@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useActiveBaby } from '@/lib/hooks/useActiveBaby'
+import { useTheme } from '@/lib/hooks/useTheme'
 import { createClient } from '@/lib/supabase/client'
 import { Baby } from '@/lib/types/baby'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
@@ -14,6 +15,7 @@ import Link from 'next/link'
 
 export default function SettingsPage() {
   const { babies, activeBaby, setActiveBaby, refreshBabies, loading } = useActiveBaby()
+  const { currentTheme } = useTheme()
   const supabase = createClient()
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingBaby, setEditingBaby] = useState<Baby | null>(null)
@@ -63,19 +65,19 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-baby-pink via-baby-blue to-baby-yellow p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8" style={{ background: currentTheme.gradientCSS }}>
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
           <div>
             <Link href="/dashboard" className="inline-block">
-              <h1 className="text-4xl font-bold text-primary-500 mb-2 hover:text-primary-600 transition-colors cursor-pointer">
+              <h1 className="text-4xl font-bold text-yellow-800 mb-2 hover:text-yellow-900 transition-colors cursor-pointer drop-shadow-md">
                 Baby Tracker 👶
               </h1>
             </Link>
-            <p className="text-gray-600 dark:text-gray-300">Manage your baby's information</p>
+            <p className="text-gray-800 font-medium dark:text-gray-300">Manage your baby's information</p>
           </div>
           <Link href="/dashboard">
-            <Button variant="outline">
+            <Button variant="outline" className="border-yellow-600 text-yellow-800 hover:bg-yellow-50 font-semibold">
               ← Back to Dashboard
             </Button>
           </Link>

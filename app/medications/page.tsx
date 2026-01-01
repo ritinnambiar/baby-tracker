@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { useActiveBaby } from '@/lib/hooks/useActiveBaby'
+import { useTheme } from '@/lib/hooks/useTheme'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -39,6 +40,7 @@ interface MedicationLog {
 }
 
 export default function MedicationsPage() {
+  const { currentTheme } = useTheme()
   const { user, loading: authLoading } = useAuth()
   const { activeBaby, loading: babiesLoading } = useActiveBaby()
   const router = useRouter()
@@ -133,7 +135,7 @@ export default function MedicationsPage() {
 
   if (authLoading || babiesLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-baby-pink via-baby-blue to-baby-yellow">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: currentTheme.gradientCSS }}>
         <LoadingSpinner size="lg" text="Loading..." />
       </div>
     )
@@ -145,17 +147,17 @@ export default function MedicationsPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-baby-pink via-baby-blue to-baby-yellow p-4 md:p-8 page-content-mobile">
+      <div className="min-h-screen p-4 md:p-8 page-content-mobile" style={{ background: currentTheme.gradientCSS }}>
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <Link href="/dashboard" className="text-primary-600 dark:text-primary-400 hover:underline text-sm mb-2 inline-block">
+            <Link href="/dashboard" className="text-yellow-600 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold">
               ← Back to Dashboard
             </Link>
-            <h1 className="text-4xl font-bold text-primary-500 mb-2">💊 Medications & Health</h1>
+            <h1 className="text-4xl font-bold text-yellow-800 mb-2 drop-shadow-md">💊 Medications & Health</h1>
             {activeBaby && (
-              <p className="text-gray-600 dark:text-gray-400">
-                Tracking for {activeBaby.name}
+              <p className="text-gray-800 font-medium dark:text-gray-400">
+                Tracking for <span className="text-yellow-700 font-bold">{activeBaby.name}</span>
               </p>
             )}
           </div>

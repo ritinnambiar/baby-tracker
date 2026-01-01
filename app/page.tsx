@@ -3,10 +3,12 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth/AuthProvider'
+import { useTheme } from '@/lib/hooks/useTheme'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 
 export default function Home() {
+  const { currentTheme } = useTheme()
   const { user, loading } = useAuth()
   const router = useRouter()
 
@@ -25,7 +27,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 bg-gradient-to-br from-baby-pink via-baby-blue to-baby-yellow">
+    <div className="min-h-screen flex items-center justify-center p-8" style={{ background: currentTheme.gradientCSS }}>
       <div className="text-center max-w-2xl">
         <h1 className="text-6xl font-bold text-primary-500 mb-4">
           Baby Tracker 👶

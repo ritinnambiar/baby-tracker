@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { useActiveBaby } from '@/lib/hooks/useActiveBaby'
+import { useTheme } from '@/lib/hooks/useTheme'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -57,6 +58,7 @@ interface TodaySummary {
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth()
   const { activeBaby, babies, loading: babiesLoading } = useActiveBaby()
+  const { currentTheme } = useTheme()
   const router = useRouter()
   const supabase = createClient()
   const [summary, setSummary] = useState<TodaySummary | null>(null)
@@ -386,7 +388,10 @@ export default function DashboardPage() {
 
   if (authLoading || babiesLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-baby-pink via-baby-blue to-baby-yellow">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: currentTheme.gradientCSS }}
+      >
         <LoadingSpinner size="lg" text="Loading your baby tracker..." />
       </div>
     )
@@ -398,29 +403,32 @@ export default function DashboardPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-baby-pink via-baby-blue to-baby-yellow p-4 md:p-8 page-content-mobile">
+      <div
+        className="min-h-screen p-4 md:p-8 page-content-mobile"
+        style={{ background: currentTheme.gradientCSS }}
+      >
         <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
           <div>
             <Link href="/dashboard" className="inline-block">
-              <h1 className="text-4xl font-bold text-primary-500 mb-2 hover:text-primary-600 transition-colors cursor-pointer">
+              <h1 className="text-4xl font-bold text-yellow-800 mb-2 hover:text-yellow-900 transition-colors cursor-pointer drop-shadow-md">
                 Baby Tracker 👶
               </h1>
             </Link>
             {activeBaby ? (
-              <p className="text-gray-600">
-                Tracking for <span className="font-semibold text-primary-600">{activeBaby.name}</span>
+              <p className="text-gray-800 font-medium">
+                Tracking for <span className="font-bold text-yellow-700">{activeBaby.name}</span>
               </p>
             ) : (
-              <p className="text-gray-600">{user.email}</p>
+              <p className="text-gray-800 font-medium">{user.email}</p>
             )}
           </div>
           <div className="flex gap-2">
             <Link href="/settings">
-              <Button variant="outline">Settings</Button>
+              <Button variant="outline" className="border-yellow-600 text-yellow-800 hover:bg-yellow-50 font-semibold">Settings</Button>
             </Link>
-            <Button variant="outline" onClick={handleLogout}>
+            <Button variant="outline" onClick={handleLogout} className="border-yellow-600 text-yellow-800 hover:bg-yellow-50 font-semibold">
               Log Out
             </Button>
           </div>

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { useActiveBaby } from '@/lib/hooks/useActiveBaby'
+import { useTheme } from '@/lib/hooks/useTheme'
 import { useDiapers } from '@/lib/hooks/useDiapers'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -29,6 +30,7 @@ interface GroupedDiapers {
 
 export default function DiaperPage() {
   const { activeBaby } = useActiveBaby()
+  const { currentTheme } = useTheme()
   const { diapers, loading, refreshDiapers } = useDiapers(activeBaby?.id || null)
   const [mode, setMode] = useState<DiaperMode>('schedule')
 
@@ -117,7 +119,7 @@ export default function DiaperPage() {
 
   if (!activeBaby) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-baby-pink via-baby-blue to-baby-yellow p-4 md:p-8 page-content-mobile flex items-center justify-center">
+      <div className="min-h-screen p-4 md:p-8 page-content-mobile flex items-center justify-center" style={{ background: currentTheme.gradientCSS }}>
         <Card className="max-w-md">
           <div className="text-center py-12">
             <div className="text-6xl mb-4">👶</div>
@@ -134,22 +136,22 @@ export default function DiaperPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-baby-pink via-baby-blue to-baby-yellow p-4 md:p-8 page-content-mobile">
+      <div className="min-h-screen p-4 md:p-8 page-content-mobile" style={{ background: currentTheme.gradientCSS }}>
         <div className="max-w-4xl mx-auto">
           {/* Header */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
           <div>
             <Link href="/dashboard" className="inline-block">
-              <h1 className="text-4xl font-bold text-primary-500 mb-2 hover:text-primary-600 transition-colors cursor-pointer">
+              <h1 className="text-4xl font-bold text-yellow-800 mb-2 hover:text-yellow-900 transition-colors cursor-pointer drop-shadow-md">
                 Baby Tracker 👶
               </h1>
             </Link>
-            <p className="text-gray-600">
-              Diapers for <span className="font-semibold text-primary-600">{activeBaby.name}</span>
+            <p className="text-gray-800 font-medium">
+              Diapers for <span className="text-yellow-700 font-bold">{activeBaby.name}</span>
             </p>
           </div>
           <Link href="/dashboard">
-            <Button variant="outline">← Back to Dashboard</Button>
+            <Button variant="outline" className="border-yellow-600 text-yellow-800 hover:bg-yellow-50 font-semibold">← Back to Dashboard</Button>
           </Link>
         </div>
 

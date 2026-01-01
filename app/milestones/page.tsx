@@ -53,6 +53,22 @@ export default function MilestonesPage() {
     }
   }, [user, router])
 
+  // Helper function to get milestone expected age for sorting
+  const getMilestoneAge = (milestone: Milestone): number => {
+    // Find matching template milestone
+    const template = COMMON_MILESTONES.find(m => m.title === milestone.milestone_title)
+    if (template) {
+      return template.ageMonthsMin
+    }
+    // Fallback: try to extract from notes
+    const match = milestone.notes?.match(/Age range: (\d+)-/)
+    if (match) {
+      return parseInt(match[1], 10)
+    }
+    // If no age found, use a high number to put custom milestones at the end
+    return 999
+  }
+
   useEffect(() => {
     const fetchMilestones = async () => {
       if (!activeBaby) {
@@ -65,11 +81,12 @@ export default function MilestonesPage() {
           .from('milestones')
           .select('*')
           .eq('baby_id', activeBaby.id)
-          .order('created_at', { ascending: false })
 
         if (error) throw error
 
-        setMilestones(data || [])
+        // Sort by expected age on initial load
+        const sorted = (data || []).sort((a, b) => getMilestoneAge(a) - getMilestoneAge(b))
+        setMilestones(sorted)
       } catch (error) {
         console.error('Error fetching milestones:', error)
         toast.error('Failed to load milestones')
@@ -130,14 +147,14 @@ export default function MilestonesPage() {
 
       toast.success('Milestones initialized! Mark them as achieved when your baby reaches them.')
 
-      // Refresh data to get newly initialized milestones
+      // Refresh data to get newly initialized milestones, sorted by age
       const { data } = await supabase
         .from('milestones')
         .select('*')
         .eq('baby_id', activeBaby.id)
-        .order('created_at', { ascending: false })
 
-      setMilestones(data || [])
+      const sorted = (data || []).sort((a, b) => getMilestoneAge(a) - getMilestoneAge(b))
+      setMilestones(sorted)
     } catch (error: any) {
       // Error already shown in toast above
     } finally {

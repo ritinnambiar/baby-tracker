@@ -16,129 +16,118 @@ interface OverallReportPDFProps {
   babyName: string
 }
 
-// PDF Styles
+// PDF Styles - Medical Report Format
 const styles = StyleSheet.create({
   page: {
-    backgroundColor: '#14141e',
-    padding: 30,
-    color: '#dcdcf0',
+    backgroundColor: '#FFFFFF',
+    padding: 40,
+    color: '#000000',
+    fontSize: 10,
   },
-  // Page 1
-  titleSection: {
+  header: {
     marginBottom: 20,
-    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: '#000000',
+    paddingBottom: 10,
   },
   title: {
-    fontSize: 32,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#dcdcf0',
-    marginBottom: 16,
+    color: '#000000',
+    marginBottom: 4,
     textAlign: 'center',
   },
-  babyInfo: {
-    backgroundColor: '#3c2832',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-    alignItems: 'center',
+  subtitle: {
+    fontSize: 10,
+    color: '#000000',
+    textAlign: 'center',
+    marginBottom: 2,
   },
-  babyName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+  patientInfo: {
+    marginTop: 15,
+    marginBottom: 15,
   },
-  dateRange: {
-    fontSize: 18,
+  infoRow: {
+    flexDirection: 'row',
     marginBottom: 4,
   },
-  trackingDays: {
-    fontSize: 14,
-    color: '#a0a0b4',
-  },
-  summaryGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    justifyContent: 'space-between',
-  },
-  summaryCard: {
-    width: '48%',
-    backgroundColor: '#3c2832',
-    padding: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#ff6b8a',
-  },
-  cardNumber: {
-    fontSize: 36,
+  infoLabel: {
+    fontSize: 9,
     fontWeight: 'bold',
-    color: '#ff6b8a',
-    marginBottom: 8,
+    width: 120,
+    color: '#000000',
   },
-  cardLabel: {
-    fontSize: 14,
-    color: '#dcdcf0',
-    fontWeight: 'bold',
-  },
-  // Page 2 & 3
-  pageHeader: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 16,
+  infoValue: {
+    fontSize: 9,
+    color: '#000000',
   },
   section: {
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  statsContainer: {
-    backgroundColor: '#2d2d39',
-    padding: 12,
-    borderRadius: 8,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  statItem: {
-    width: '31%',
-    marginBottom: 8,
-  },
-  statLabel: {
-    fontSize: 9,
-    color: '#a0a0b4',
-    marginBottom: 2,
-  },
-  statValue: {
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  insightsContainer: {
-    backgroundColor: '#3c2832',
-    padding: 12,
-    borderRadius: 8,
-  },
-  insightItem: {
     fontSize: 11,
-    marginBottom: 8,
-    paddingLeft: 12,
+    fontWeight: 'bold',
+    marginBottom: 6,
+    color: '#000000',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+    paddingBottom: 2,
+  },
+  table: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#000000',
+  },
+  tableCol: {
+    width: '50%',
+    borderRightWidth: 1,
+    borderRightColor: '#000000',
+    padding: 4,
+  },
+  tableColLast: {
+    width: '50%',
+    padding: 4,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+  },
+  tableRowLast: {
+    flexDirection: 'row',
+  },
+  tableCell: {
+    fontSize: 8,
+    padding: 3,
+    width: '50%',
+  },
+  tableCellLabel: {
+    fontSize: 8,
+    padding: 3,
+    width: '50%',
+    fontWeight: 'bold',
+  },
+  observations: {
+    marginTop: 8,
+  },
+  observationItem: {
+    fontSize: 9,
+    marginBottom: 3,
+    paddingLeft: 10,
   },
   footer: {
-    marginTop: 16,
-    paddingTop: 12,
+    position: 'absolute',
+    bottom: 30,
+    left: 40,
+    right: 40,
     borderTopWidth: 1,
-    borderTopColor: '#464650',
-    alignItems: 'center',
+    borderTopColor: '#000000',
+    paddingTop: 8,
   },
   footerText: {
-    fontSize: 9,
-    color: '#a0a0b4',
+    fontSize: 8,
+    color: '#000000',
+    textAlign: 'center',
   },
 })
 
@@ -184,210 +173,195 @@ export function OverallReportPDF({ feedings, sleeps, diapers, pumpings, dateRang
 
   return (
     <Document>
-      {/* PAGE 1: Title & Summary */}
       <Page size="A4" style={styles.page}>
-        <View style={styles.titleSection}>
-          <Text style={styles.title}>Overall Baby Care Report</Text>
-          <View style={styles.babyInfo}>
-            <Text style={styles.babyName}>{babyName}</Text>
-            <Text style={styles.dateRange}>
-              {format(dateRange.start, 'MMMM d, yyyy')} - {format(dateRange.end, 'MMMM d, yyyy')}
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>BABY CARE REPORT</Text>
+          <Text style={styles.subtitle}>Comprehensive Developmental Tracking Summary</Text>
+        </View>
+
+        {/* Patient Information */}
+        <View style={styles.patientInfo}>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Baby Name:</Text>
+            <Text style={styles.infoValue}>{babyName}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Report Period:</Text>
+            <Text style={styles.infoValue}>
+              {format(dateRange.start, 'MMM d, yyyy')} - {format(dateRange.end, 'MMM d, yyyy')} ({daysDiff} days)
             </Text>
-            <Text style={styles.trackingDays}>
-              {daysDiff} day{daysDiff !== 1 ? 's' : ''} of tracking data
-            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Report Date:</Text>
+            <Text style={styles.infoValue}>{format(new Date(), 'MMMM d, yyyy')}</Text>
           </View>
         </View>
 
-        <View style={styles.summaryGrid}>
-          <View style={styles.summaryCard}>
-            <Text style={styles.cardNumber}>{totalFeedings}</Text>
-            <Text style={styles.cardLabel}>FEEDINGS</Text>
-          </View>
-          <View style={styles.summaryCard}>
-            <Text style={styles.cardNumber}>{totalSleeps}</Text>
-            <Text style={styles.cardLabel}>SLEEP SESSIONS</Text>
-          </View>
-          <View style={styles.summaryCard}>
-            <Text style={styles.cardNumber}>{totalDiapers}</Text>
-            <Text style={styles.cardLabel}>DIAPER CHANGES</Text>
-          </View>
-          <View style={styles.summaryCard}>
-            <Text style={styles.cardNumber}>{totalPumpingSessions}</Text>
-            <Text style={styles.cardLabel}>PUMPING SESSIONS</Text>
-          </View>
-        </View>
-      </Page>
-
-      {/* PAGE 2: Detailed Statistics */}
-      <Page size="A4" style={styles.page}>
-        <Text style={styles.pageHeader}>Detailed Statistics</Text>
-
-        {/* Feeding Stats */}
+        {/* Feeding */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Feeding Statistics</Text>
-          <View style={styles.statsContainer}>
-            <View style={styles.statsGrid}>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Total Feedings</Text>
-                <Text style={styles.statValue}>{totalFeedings}</Text>
+          <Text style={styles.sectionTitle}>1. FEEDING</Text>
+          <View style={styles.table}>
+            <View style={styles.tableCol}>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Total Feedings:</Text>
+                <Text style={styles.tableCell}>{totalFeedings}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Avg. Per Day</Text>
-                <Text style={styles.statValue}>{avgFeedingsPerDay}</Text>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Average Per Day:</Text>
+                <Text style={styles.tableCell}>{avgFeedingsPerDay}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Bottle Feedings</Text>
-                <Text style={styles.statValue}>{bottleFeedings.length}</Text>
+              <View style={styles.tableRowLast}>
+                <Text style={styles.tableCellLabel}>Bottle Feedings:</Text>
+                <Text style={styles.tableCell}>{bottleFeedings.length}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Breast Feedings</Text>
-                <Text style={styles.statValue}>{breastFeedings.length}</Text>
+            </View>
+            <View style={styles.tableColLast}>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Breast Feedings:</Text>
+                <Text style={styles.tableCell}>{breastFeedings.length}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Total Bottle</Text>
-                <Text style={styles.statValue}>{totalBottleMl} ml</Text>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Total Formula:</Text>
+                <Text style={styles.tableCell}>{totalBottleMl} ml</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Total Nursing</Text>
-                <Text style={styles.statValue}>{formatDuration(totalNursingMinutes)}</Text>
+              <View style={styles.tableRowLast}>
+                <Text style={styles.tableCellLabel}>Total Nursing Time:</Text>
+                <Text style={styles.tableCell}>{formatDuration(totalNursingMinutes)}</Text>
               </View>
             </View>
           </View>
         </View>
 
-        {/* Sleep Stats */}
+        {/* Sleep */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Sleep Statistics</Text>
-          <View style={styles.statsContainer}>
-            <View style={styles.statsGrid}>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Total Sleep</Text>
-                <Text style={styles.statValue}>{totalSleepHours}h {totalSleepMins}m</Text>
+          <Text style={styles.sectionTitle}>2. SLEEP</Text>
+          <View style={styles.table}>
+            <View style={styles.tableCol}>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Total Sleep Time:</Text>
+                <Text style={styles.tableCell}>{totalSleepHours}h {totalSleepMins}m</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Avg. Per Day</Text>
-                <Text style={styles.statValue}>{avgSleepHoursPerDay}h</Text>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Average Per Day:</Text>
+                <Text style={styles.tableCell}>{avgSleepHoursPerDay}h</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Naps</Text>
-                <Text style={styles.statValue}>{naps.length}</Text>
+              <View style={styles.tableRowLast}>
+                <Text style={styles.tableCellLabel}>Nap Sessions:</Text>
+                <Text style={styles.tableCell}>{naps.length}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Night Sleeps</Text>
-                <Text style={styles.statValue}>{nights.length}</Text>
+            </View>
+            <View style={styles.tableColLast}>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Night Sleep Sessions:</Text>
+                <Text style={styles.tableCell}>{nights.length}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Longest Sleep</Text>
-                <Text style={styles.statValue}>{formatDuration(longestSleep)}</Text>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Longest Sleep Period:</Text>
+                <Text style={styles.tableCell}>{formatDuration(longestSleep)}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Total Sessions</Text>
-                <Text style={styles.statValue}>{totalSleeps}</Text>
+              <View style={styles.tableRowLast}>
+                <Text style={styles.tableCellLabel}>Total Sessions:</Text>
+                <Text style={styles.tableCell}>{totalSleeps}</Text>
               </View>
             </View>
           </View>
         </View>
 
-        {/* Diaper Stats */}
+        {/* Diaper */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Diaper Statistics</Text>
-          <View style={styles.statsContainer}>
-            <View style={styles.statsGrid}>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Total Changes</Text>
-                <Text style={styles.statValue}>{totalDiapers}</Text>
+          <Text style={styles.sectionTitle}>3. ELIMINATION</Text>
+          <View style={styles.table}>
+            <View style={styles.tableCol}>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Total Changes:</Text>
+                <Text style={styles.tableCell}>{totalDiapers}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Avg. Per Day</Text>
-                <Text style={styles.statValue}>{avgDiapersPerDay}</Text>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Average Per Day:</Text>
+                <Text style={styles.tableCell}>{avgDiapersPerDay}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Wet Only</Text>
-                <Text style={styles.statValue}>{wetOnly}</Text>
+              <View style={styles.tableRowLast}>
+                <Text style={styles.tableCellLabel}>Wet Only:</Text>
+                <Text style={styles.tableCell}>{wetOnly}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Dirty Only</Text>
-                <Text style={styles.statValue}>{dirtyOnly}</Text>
+            </View>
+            <View style={styles.tableColLast}>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Soiled Only:</Text>
+                <Text style={styles.tableCell}>{dirtyOnly}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Both</Text>
-                <Text style={styles.statValue}>{both}</Text>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCellLabel}>Combined:</Text>
+                <Text style={styles.tableCell}>{both}</Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Total Wet</Text>
-                <Text style={styles.statValue}>{wetOnly + both}</Text>
+              <View style={styles.tableRowLast}>
+                <Text style={styles.tableCellLabel}>Total Wet:</Text>
+                <Text style={styles.tableCell}>{wetOnly + both}</Text>
               </View>
             </View>
           </View>
         </View>
 
-        {/* Pumping Stats */}
+        {/* Pumping (if applicable) */}
         {totalPumpingSessions > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Pumping Statistics</Text>
-            <View style={styles.statsContainer}>
-              <View style={styles.statsGrid}>
-                <View style={styles.statItem}>
-                  <Text style={styles.statLabel}>Total Sessions</Text>
-                  <Text style={styles.statValue}>{totalPumpingSessions}</Text>
+            <Text style={styles.sectionTitle}>4. LACTATION</Text>
+            <View style={styles.table}>
+              <View style={styles.tableCol}>
+                <View style={styles.tableRowLast}>
+                  <Text style={styles.tableCellLabel}>Total Sessions:</Text>
+                  <Text style={styles.tableCell}>{totalPumpingSessions}</Text>
                 </View>
-                <View style={styles.statItem}>
-                  <Text style={styles.statLabel}>Total Pumped</Text>
-                  <Text style={styles.statValue}>{totalPumpedMl} ml</Text>
-                </View>
-                <View style={styles.statItem}>
-                  <Text style={styles.statLabel}>Avg. Per Session</Text>
-                  <Text style={styles.statValue}>{avgPumpedPerSession} ml</Text>
+              </View>
+              <View style={styles.tableColLast}>
+                <View style={styles.tableRowLast}>
+                  <Text style={styles.tableCellLabel}>Total Output:</Text>
+                  <Text style={styles.tableCell}>{totalPumpedMl} ml ({avgPumpedPerSession} ml avg)</Text>
                 </View>
               </View>
             </View>
           </View>
         )}
-      </Page>
 
-      {/* PAGE 3: Key Insights */}
-      <Page size="A4" style={styles.page}>
-        <Text style={styles.pageHeader}>Key Insights</Text>
-
-        <View style={styles.insightsContainer}>
-          <Text style={styles.insightItem}>
-            - Your baby averaged {avgFeedingsPerDay} feedings per day and {avgSleepHoursPerDay} hours of sleep per day
-          </Text>
-
-          {bottleFeedings.length > 0 && (
-            <Text style={styles.insightItem}>
-              - Consumed an average of {Math.round(totalBottleMl / daysDiff)} ml of formula/milk per day
+        {/* Quick Stats */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{totalPumpingSessions > 0 ? '5' : '4'}. QUICK STATS</Text>
+          <View style={styles.observations}>
+            <Text style={styles.observationItem}>
+              • Feeding frequency: {avgFeedingsPerDay} feeds per day
             </Text>
-          )}
-
-          <Text style={styles.insightItem}>
-            - Required {avgDiapersPerDay} diaper changes per day on average
-          </Text>
-
-          {longestSleep > 0 && (
-            <Text style={styles.insightItem}>
-              - Longest sleep stretch was {formatDuration(longestSleep)}
+            <Text style={styles.observationItem}>
+              • Sleep duration: {avgSleepHoursPerDay} hours per day average
             </Text>
-          )}
-
-          {naps.length > 0 && (
-            <Text style={styles.insightItem}>
-              - Took an average of {(naps.length / daysDiff).toFixed(1)} naps per day
+            <Text style={styles.observationItem}>
+              • Diaper changes: {avgDiapersPerDay} changes per day
             </Text>
-          )}
-
-          {totalPumpingSessions > 0 && (
-            <Text style={styles.insightItem}>
-              - Average pumping output was {avgPumpedPerSession} ml per session
-            </Text>
-          )}
+            {longestSleep > 0 && (
+              <Text style={styles.observationItem}>
+                • Longest sleep: {formatDuration(longestSleep)}
+              </Text>
+            )}
+            {bottleFeedings.length > 0 && (
+              <Text style={styles.observationItem}>
+                • Average formula intake: {Math.round(totalBottleMl / daysDiff)} ml per day
+              </Text>
+            )}
+            {naps.length > 0 && (
+              <Text style={styles.observationItem}>
+                • Naps per day: {(naps.length / daysDiff).toFixed(1)}
+              </Text>
+            )}
+          </View>
         </View>
 
+        {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Baby Tracker - Comprehensive Care Report</Text>
           <Text style={styles.footerText}>
-            Generated on {format(new Date(), 'MMMM d, yyyy')} at {format(new Date(), 'h:mm a')}
+            This report is computer-generated and contains observational data only. For medical advice, please consult with a qualified healthcare provider.
+          </Text>
+          <Text style={styles.footerText}>
+            Generated: {format(new Date(), 'MMMM d, yyyy')} | Baby Tracker Medical Report System
           </Text>
         </View>
       </Page>

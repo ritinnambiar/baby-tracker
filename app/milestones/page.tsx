@@ -81,17 +81,40 @@ export default function MilestonesPage() {
     fetchMilestones()
   }, [activeBaby, supabase])
 
+  // Helper function to get age for sorting
+  const getMilestoneAge = (milestone: Milestone): number => {
+    // Find matching template milestone
+    const template = COMMON_MILESTONES.find(m => m.title === milestone.milestone_title)
+    if (template) {
+      return template.ageMonthsMin
+    }
+    // Fallback: try to extract from notes
+    const match = milestone.notes?.match(/Age range: (\d+)-/)
+    if (match) {
+      return parseInt(match[1], 10)
+    }
+    // If no age found, use a high number to put custom milestones at the end
+    return 999
+  }
+
   const filteredMilestones =
     selectedCategory === 'all'
       ? milestones
       : milestones.filter((m) => m.milestone_category === selectedCategory)
 
-  const achievedMilestones = filteredMilestones.filter(m => m.achieved_date)
-  const pendingMilestones = filteredMilestones.filter(m => !m.achieved_date)
+  // Sort all milestones by age, regardless of completion status
+  const sortedMilestones = [...filteredMilestones].sort((a, b) => {
+    return getMilestoneAge(a) - getMilestoneAge(b)
+  })
+
+  const achievedMilestones = sortedMilestones.filter(m => m.achieved_date)
+  const pendingMilestones = sortedMilestones.filter(m => !m.achieved_date)
 
   const groupedByCategory = MILESTONE_CATEGORIES.map((cat) => ({
     ...cat,
-    milestones: milestones.filter((m) => m.milestone_category === cat.value),
+    milestones: milestones
+      .filter((m) => m.milestone_category === cat.value)
+      .sort((a, b) => getMilestoneAge(a) - getMilestoneAge(b)),
   }))
 
   const babyAgeMonths = activeBaby
@@ -348,7 +371,7 @@ export default function MilestonesPage() {
                 </Card>
               ) : (
                 <div className="space-y-4">
-                  {filteredMilestones.map((milestone) => (
+                  {sortedMilestones.map((milestone) => (
                     <div
                       key={milestone.id}
                       className={`p-4 rounded-xl border-2 transition-all ${

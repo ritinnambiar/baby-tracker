@@ -7,6 +7,7 @@ export interface GrowthMeasurement {
   height_cm: number | null
   head_circumference_cm: number | null
   notes: string | null
+  photo_url: string | null
   created_at: string
   updated_at: string
 }

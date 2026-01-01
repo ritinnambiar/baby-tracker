@@ -6,6 +6,7 @@ export interface DiaperChange {
   is_wet: boolean
   is_dirty: boolean
   notes: string | null
+  photo_url: string | null
   created_at: string
   updated_at: string
 }

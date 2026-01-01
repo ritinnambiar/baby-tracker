@@ -65,7 +65,7 @@ export default function MilestonesPage() {
           .from('milestones')
           .select('*')
           .eq('baby_id', activeBaby.id)
-          .order('achieved_date', { ascending: false })
+          .order('created_at', { ascending: false })
 
         if (error) throw error
 
@@ -135,7 +135,7 @@ export default function MilestonesPage() {
         .from('milestones')
         .select('*')
         .eq('baby_id', activeBaby.id)
-        .order('achieved_date', { ascending: false })
+        .order('created_at', { ascending: false })
 
       setMilestones(data || [])
     } catch (error: any) {
@@ -180,7 +180,7 @@ export default function MilestonesPage() {
         .from('milestones')
         .select('*')
         .eq('baby_id', activeBaby.id)
-        .order('achieved_date', { ascending: false })
+        .order('created_at', { ascending: false })
 
       setMilestones(data || [])
     } catch (error) {
@@ -209,7 +209,7 @@ export default function MilestonesPage() {
         .from('milestones')
         .select('*')
         .eq('baby_id', activeBaby.id)
-        .order('achieved_date', { ascending: false })
+        .order('created_at', { ascending: false })
 
       setMilestones(data || [])
     } catch (error) {

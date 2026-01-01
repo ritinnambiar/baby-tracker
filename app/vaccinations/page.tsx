@@ -246,8 +246,8 @@ export default function VaccinationsPage() {
 
   const handleDeleteVaccine = async (id: string, vaccineName: string) => {
     // Check if this is a default vaccine
-    const isDefaultVaccine = VACCINE_SCHEDULE.some(schedule =>
-      schedule.vaccines.includes(vaccineName)
+    const isDefaultVaccine = VACCINE_SCHEDULE.some(vaccine =>
+      vaccine.name === vaccineName
     )
 
     if (isDefaultVaccine) {

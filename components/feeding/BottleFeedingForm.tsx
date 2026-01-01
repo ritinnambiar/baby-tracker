@@ -64,7 +64,7 @@ export function BottleFeedingForm({ onComplete }: { onComplete?: () => void }) {
 
       onComplete?.()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to log feeding')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to log feeding')
     } finally {
       setLoading(false)
     }

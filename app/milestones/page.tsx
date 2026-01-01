@@ -189,6 +189,8 @@ export default function MilestonesPage() {
   }
 
   const handleUndoCompletion = async (id: string) => {
+    if (!activeBaby) return
+
     try {
       const { error } = await supabase
         .from('milestones')
@@ -564,7 +566,7 @@ function MilestoneFormModal({
       toast.success('Milestone added!')
       onSuccess()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to add milestone')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to add milestone')
     } finally {
       setLoading(false)
     }

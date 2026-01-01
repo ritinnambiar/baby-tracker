@@ -122,7 +122,7 @@ export default function VaccinationsPage() {
   }
 
   const handleSaveCompletion = async () => {
-    if (!selectedVaccine) return
+    if (!selectedVaccine || !activeBaby) return
 
     try {
       const { error } = await supabase
@@ -163,6 +163,8 @@ export default function VaccinationsPage() {
   }
 
   const handleUndoCompletion = async (id: string) => {
+    if (!activeBaby) return
+
     try {
       const { error } = await supabase
         .from('vaccinations')

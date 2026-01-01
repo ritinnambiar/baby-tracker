@@ -84,7 +84,7 @@ export function GrowthChart({ measurements, type }: GrowthChartProps) {
                 padding: '8px 12px',
               }}
               labelStyle={{ fontWeight: 'bold', marginBottom: '4px' }}
-              formatter={(value: number) => [`${value} ${currentConfig.unit}`, currentConfig.title]}
+              formatter={(value) => [`${value ?? ''} ${currentConfig.unit}`, currentConfig.title]}
               labelFormatter={(label) => {
                 const item = chartData.find((d) => d.date === label)
                 return item?.fullDate || label

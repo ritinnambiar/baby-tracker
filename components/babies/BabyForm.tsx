@@ -137,7 +137,7 @@ export function BabyForm({ baby, onSuccess, onCancel, redirectToDashboard = fals
         onSuccess?.()
       }
     } catch (error: any) {
-      toast.error(error.message || 'Failed to save baby profile')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to save baby profile')
     } finally {
       setLoading(false)
     }

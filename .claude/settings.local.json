@@ -17,7 +17,19 @@
       "Bash(curl:*)",
       "Bash(for page in feeding diaper milestones)",
       "Bash(do echo -n \"$page: \")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(for page in feeding sleep diaper pumping)",
+      "Bash(for page in sleep diaper pumping)",
+      "Bash(grep:*)",
+      "Bash(lsof:*)",
+      "Bash(cat:*)",
+      "Bash(kill:*)",
+      "Bash(find:*)",
+      "Bash({} ;)",
+      "Bash(npx vercel --version)",
+      "Bash(git push:*)",
+      "Bash(npm run build:*)",
+      "Bash(xargs:*)"
     ]
   }
 }

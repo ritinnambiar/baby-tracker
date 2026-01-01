@@ -156,7 +156,7 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
       setEmail('')
       fetchData()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to add caregiver')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to add caregiver')
     } finally {
       setAddingCaregiver(false)
     }
@@ -178,7 +178,7 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
       toast.success('Caregiver removed')
       fetchData()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to remove caregiver')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to remove caregiver')
     }
   }
 
@@ -198,7 +198,7 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
       toast.success('Invitation cancelled')
       fetchData()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to cancel invitation')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to cancel invitation')
     }
   }
 

@@ -69,7 +69,7 @@ export function DiaperForm({ onComplete }: { onComplete?: () => void }) {
 
       onComplete?.()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to log diaper change')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to log diaper change')
     } finally {
       setLoading(false)
     }

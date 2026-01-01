@@ -73,7 +73,7 @@ export function GrowthForm({ onComplete }: { onComplete?: () => void }) {
 
       onComplete?.()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to log measurement')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to log measurement')
     } finally {
       setLoading(false)
     }

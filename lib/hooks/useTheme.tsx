@@ -59,15 +59,15 @@ export const themes: Record<ThemeName, Theme> = {
     name: 'rainbow-nursery',
     displayName: 'Rainbow Nursery',
     colors: {
-      bg1: '#FFB5A7', // coral
-      bg2: '#FFE89C', // yellow
-      bg3: '#A8E6E3', // aqua
-      primary: '#FF8BA3',
-      accent: '#6BDBFF',
+      bg1: '#F5D5CF', // muted coral/peach
+      bg2: '#FFF4D1', // muted cream/yellow
+      bg3: '#D5EDE9', // muted aqua/mint
+      primary: '#F5B8C5',
+      accent: '#A8D8E8',
       text: '#1F2937',
     },
-    gradient: 'from-[#FFB5A7] via-[#FFE89C] to-[#A8E6E3]',
-    gradientCSS: 'linear-gradient(to bottom right, #FFB5A7, #FFE89C, #A8E6E3)',
+    gradient: 'from-[#F5D5CF] via-[#FFF4D1] to-[#D5EDE9]',
+    gradientCSS: 'linear-gradient(to bottom right, #F5D5CF, #FFF4D1, #D5EDE9)',
   },
   'ocean-baby': {
     name: 'ocean-baby',

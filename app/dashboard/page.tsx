@@ -287,7 +287,7 @@ export default function DashboardPage() {
         }
 
         const growthSummary = {
-          hasData: growth && growth.length > 0,
+          hasData: !!(growth && growth.length > 0),
           latest: growth?.[0] ? {
             weight: growth[0].weight_kg,
             height: growth[0].height_cm,

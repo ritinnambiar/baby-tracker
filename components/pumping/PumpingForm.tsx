@@ -75,7 +75,7 @@ export function PumpingForm({ onComplete }: { onComplete?: () => void }) {
 
       onComplete?.()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to log pumping session')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to log pumping session')
     } finally {
       setLoading(false)
     }

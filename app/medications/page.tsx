@@ -379,7 +379,7 @@ function MedicationFormModal({ isOpen, onClose, babyId, userId, onSuccess }: {
       toast.success('Medication added!')
       onSuccess()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to add medication')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to add medication')
     } finally {
       setLoading(false)
     }
@@ -578,7 +578,7 @@ function LogDoseModal({ isOpen, onClose, medication, babyId, userId, onSuccess }
       toast.success('Dose logged!')
       onSuccess()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to log dose')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to log dose')
     } finally {
       setLoading(false)
     }

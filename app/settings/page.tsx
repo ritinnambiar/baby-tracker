@@ -34,7 +34,7 @@ export default function SettingsPage() {
       toast.success('Baby profile deleted')
       await refreshBabies()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to delete baby profile')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to delete baby profile')
     }
   }
 

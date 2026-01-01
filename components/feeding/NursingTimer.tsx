@@ -150,7 +150,7 @@ export function NursingTimer({ onComplete }: { onComplete?: () => void }) {
 
       onComplete?.()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to save nursing session')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to save nursing session')
     }
   }
 

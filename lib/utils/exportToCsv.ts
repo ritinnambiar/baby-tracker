@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 
 export interface ExportData {
-  [key: string]: any
+  [key: string]: string | number | boolean | null | undefined
 }
 
 export function exportToCsv(data: ExportData[], filename: string) {

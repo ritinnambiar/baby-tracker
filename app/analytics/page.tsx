@@ -266,7 +266,7 @@ export default function AnalyticsPage() {
             <>
               {/* Date Filter */}
               <div className="mb-6">
-                <DateFilter onFilterChange={setDateRange} initialFilter="2weeks" />
+                <DateFilter onFilterChange={setDateRange} initialFilter="week" />
               </div>
 
               {loading ? (

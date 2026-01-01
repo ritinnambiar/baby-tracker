@@ -99,7 +99,7 @@ export default function FeedingPage() {
       return {
         id: feeding.id,
         startTime: feeding.started_at,
-        endTime: duration > 0 ? feeding.ended_at : undefined,
+        endTime: duration > 0 ? (feeding.ended_at ?? undefined) : undefined,
         title: isBottle
           ? `${feeding.amount_ml}ml`
           : `${duration}m`,

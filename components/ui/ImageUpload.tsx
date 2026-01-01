@@ -96,21 +96,23 @@ export function ImageUpload({
         onChange={handleFileSelect}
         className="hidden"
         disabled={uploading}
+        aria-label="Upload photo"
       />
 
       {previewUrl ? (
         <div className="relative">
           <img
             src={previewUrl}
-            alt="Preview"
+            alt="Uploaded photo preview"
             className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 dark:border-gray-700"
           />
           <button
             onClick={handleRemove}
             className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transition-colors"
             type="button"
+            aria-label="Remove photo"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
       ) : (
@@ -118,13 +120,15 @@ export function ImageUpload({
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
           type="button"
+          aria-busy={uploading}
+          aria-label={uploading ? 'Uploading photo...' : label}
           className="w-full h-48 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-primary-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
         >
           {uploading ? (
             <LoadingSpinner size="sm" text="Uploading..." />
           ) : (
             <>
-              <Camera className="w-8 h-8 text-gray-400" />
+              <Camera className="w-8 h-8 text-gray-400" aria-hidden="true" />
               <span className="text-sm text-gray-600 dark:text-gray-400">{label}</span>
             </>
           )}

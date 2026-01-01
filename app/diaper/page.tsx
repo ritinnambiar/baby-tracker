@@ -142,16 +142,16 @@ export default function DiaperPage() {
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
           <div>
             <Link href="/dashboard" className="inline-block">
-              <h1 className="text-4xl font-bold text-yellow-800 mb-2 hover:text-yellow-900 transition-colors cursor-pointer drop-shadow-md">
+              <h1 className="text-4xl font-bold text-primary-600 mb-2 hover:text-primary-700 transition-colors cursor-pointer drop-shadow-md">
                 Baby Tracker 👶
               </h1>
             </Link>
             <p className="text-gray-800 font-medium">
-              Diapers for <span className="text-yellow-700 font-bold">{activeBaby.name}</span>
+              Diapers for <span className="text-primary-600 font-bold">{activeBaby.name}</span>
             </p>
           </div>
           <Link href="/dashboard">
-            <Button variant="outline" className="border-yellow-600 text-yellow-800 hover:bg-yellow-50 font-semibold">← Back to Dashboard</Button>
+            <Button variant="outline" className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold">← Back to Dashboard</Button>
           </Link>
         </div>
 
@@ -235,7 +235,7 @@ export default function DiaperPage() {
                       <div className="text-sm text-gray-600">💩 Dirty</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-yellow-600">
+                      <div className="text-3xl font-bold text-primary-500">
                         {diapers.filter(d => d.is_wet && d.is_dirty).length}
                       </div>
                       <div className="text-sm text-gray-600">💧💩 Both</div>

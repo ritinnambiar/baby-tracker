@@ -7,7 +7,6 @@ import { useAuth } from '@/components/auth/AuthProvider'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
-import { ImageUpload } from '@/components/ui/ImageUpload'
 import toast from 'react-hot-toast'
 
 export function BottleFeedingForm({ onComplete }: { onComplete?: () => void }) {
@@ -19,7 +18,6 @@ export function BottleFeedingForm({ onComplete }: { onComplete?: () => void }) {
   const [amount, setAmount] = useState('')
   const [time, setTime] = useState('')
   const [notes, setNotes] = useState('')
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
 
   // Set default time on client side only to avoid hydration mismatch
   useEffect(() => {
@@ -53,7 +51,6 @@ export function BottleFeedingForm({ onComplete }: { onComplete?: () => void }) {
         started_at: time,
         ended_at: time,
         notes: notes || null,
-        photo_url: photoUrl,
       })
 
       if (error) throw error
@@ -64,7 +61,6 @@ export function BottleFeedingForm({ onComplete }: { onComplete?: () => void }) {
       setAmount('')
       setTime(new Date().toISOString().slice(0, 16))
       setNotes('')
-      setPhotoUrl(null)
 
       onComplete?.()
     } catch (error: any) {
@@ -111,21 +107,6 @@ export function BottleFeedingForm({ onComplete }: { onComplete?: () => void }) {
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Any additional notes..."
           />
-
-          {user && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Photo (Optional)
-              </label>
-              <ImageUpload
-                userId={user.id}
-                onUploadComplete={setPhotoUrl}
-                currentImageUrl={photoUrl}
-                onRemove={() => setPhotoUrl(null)}
-                label="Add Photo"
-              />
-            </div>
-          )}
 
           <Button type="submit" className="w-full" size="lg" isLoading={loading}>
             Log Bottle Feeding

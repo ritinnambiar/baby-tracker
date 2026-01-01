@@ -1,4 +1,7 @@
+'use client'
+
 import { ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils/cn'
 
 interface CardProps {
@@ -9,16 +12,19 @@ interface CardProps {
 
 export function Card({ children, className, onClick }: CardProps) {
   return (
-    <div
+    <motion.div
       className={cn(
-        'bg-white rounded-3xl shadow-soft p-6 transition-all duration-200',
-        onClick && 'cursor-pointer hover:shadow-lg',
+        'bg-white rounded-3xl shadow-soft p-6',
+        onClick && 'cursor-pointer',
         className
       )}
       onClick={onClick}
+      whileHover={onClick ? { scale: 1.02, y: -4, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' } : {}}
+      whileTap={onClick ? { scale: 0.98 } : {}}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       {children}
-    </div>
+    </motion.div>
   )
 }
 

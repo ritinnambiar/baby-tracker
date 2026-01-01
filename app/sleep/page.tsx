@@ -106,7 +106,7 @@ export default function SleepPage() {
         endTime: sleep.ended_at || undefined,
         title: duration > 0 ? formatDuration(duration) : 'Active',
         subtitle: `${sleep.sleep_type === 'nap' ? 'Nap' : 'Night Sleep'} - ${formatDuration(duration)}`,
-        color: sleep.sleep_type === 'nap' ? 'bg-baby-blue' : 'bg-baby-purple',
+        color: sleep.sleep_type === 'nap' ? 'bg-gray-800' : 'bg-gray-900',
         icon: sleep.sleep_type === 'nap' ? '😴' : '🌙',
       }
     })
@@ -137,16 +137,16 @@ export default function SleepPage() {
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
           <div>
             <Link href="/dashboard" className="inline-block">
-              <h1 className="text-4xl font-bold text-yellow-800 mb-2 hover:text-yellow-900 transition-colors cursor-pointer drop-shadow-md">
+              <h1 className="text-4xl font-bold text-primary-600 mb-2 hover:text-primary-700 transition-colors cursor-pointer drop-shadow-md">
                 Baby Tracker 👶
               </h1>
             </Link>
             <p className="text-gray-800 font-medium">
-              Sleep for <span className="text-yellow-700 font-bold">{activeBaby.name}</span>
+              Sleep for <span className="text-primary-600 font-bold">{activeBaby.name}</span>
             </p>
           </div>
           <Link href="/dashboard">
-            <Button variant="outline" className="border-yellow-600 text-yellow-800 hover:bg-yellow-50 font-semibold">← Back to Dashboard</Button>
+            <Button variant="outline" className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold">← Back to Dashboard</Button>
           </Link>
         </div>
 
@@ -156,14 +156,14 @@ export default function SleepPage() {
             onClick={() => setMode('schedule')}
             className={`rounded-3xl p-6 transition-all ${
               mode === 'schedule'
-                ? 'bg-gradient-to-br from-baby-blue to-blue-200 shadow-lg scale-105'
+                ? 'bg-gradient-to-br from-gray-800 to-gray-700 text-white shadow-lg scale-105'
                 : 'bg-white hover:shadow-md hover:scale-102'
             }`}
           >
             <div className="text-center">
               <div className="text-5xl mb-3">📅</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-1">Schedule</h3>
-              <p className="text-sm text-gray-600">View sleep history</p>
+              <h3 className={`text-xl font-bold mb-1 ${mode === 'schedule' ? 'text-white' : 'text-gray-800'}`}>Schedule</h3>
+              <p className={`text-sm ${mode === 'schedule' ? 'text-gray-200' : 'text-gray-600'}`}>View sleep history</p>
             </div>
           </button>
 
@@ -171,14 +171,14 @@ export default function SleepPage() {
             onClick={() => setMode('timer')}
             className={`rounded-3xl p-6 transition-all ${
               mode === 'timer'
-                ? 'bg-gradient-to-br from-baby-purple to-purple-200 shadow-lg scale-105'
+                ? 'bg-gradient-to-br from-gray-900 to-gray-800 text-white shadow-lg scale-105'
                 : 'bg-white hover:shadow-md hover:scale-102'
             }`}
           >
             <div className="text-center">
               <div className="text-5xl mb-3">⏱️</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-1">Timer</h3>
-              <p className="text-sm text-gray-600">Track active sleep</p>
+              <h3 className={`text-xl font-bold mb-1 ${mode === 'timer' ? 'text-white' : 'text-gray-800'}`}>Timer</h3>
+              <p className={`text-sm ${mode === 'timer' ? 'text-gray-200' : 'text-gray-600'}`}>Track active sleep</p>
             </div>
           </button>
 

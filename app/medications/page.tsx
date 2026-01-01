@@ -151,13 +151,13 @@ export default function MedicationsPage() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <Link href="/dashboard" className="text-yellow-600 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold">
+            <Link href="/dashboard" className="text-primary-500 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold">
               ← Back to Dashboard
             </Link>
-            <h1 className="text-4xl font-bold text-yellow-800 mb-2 drop-shadow-md">💊 Medications & Health</h1>
+            <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">💊 Medications & Health</h1>
             {activeBaby && (
               <p className="text-gray-800 font-medium dark:text-gray-400">
-                Tracking for <span className="text-yellow-700 font-bold">{activeBaby.name}</span>
+                Tracking for <span className="text-primary-600 font-bold">{activeBaby.name}</span>
               </p>
             )}
           </div>

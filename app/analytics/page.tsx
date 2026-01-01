@@ -238,14 +238,14 @@ export default function AnalyticsPage() {
           <div className="mb-8">
             <Link
               href="/dashboard"
-              className="text-yellow-600 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold"
+              className="text-primary-500 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold"
             >
               ← Back to Dashboard
             </Link>
-            <h1 className="text-4xl font-bold text-yellow-800 mb-2 drop-shadow-md">📊 Analytics & Insights</h1>
+            <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">📊 Analytics & Insights</h1>
             {activeBaby && (
               <p className="text-gray-800 font-medium dark:text-gray-400">
-                Data insights for <span className="text-yellow-700 font-bold">{activeBaby.name}</span>
+                Data insights for <span className="text-primary-600 font-bold">{activeBaby.name}</span>
               </p>
             )}
           </div>
@@ -296,7 +296,7 @@ export default function AnalyticsPage() {
                         </div>
                       </div>
                       <div className="text-center p-4 bg-baby-yellow rounded-xl">
-                        <div className="text-3xl font-bold text-yellow-600">
+                        <div className="text-3xl font-bold text-primary-500">
                           {insights.avgDiapersPerDay}
                         </div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">

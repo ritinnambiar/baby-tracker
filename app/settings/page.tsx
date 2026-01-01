@@ -70,14 +70,14 @@ export default function SettingsPage() {
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
           <div>
             <Link href="/dashboard" className="inline-block">
-              <h1 className="text-4xl font-bold text-yellow-800 mb-2 hover:text-yellow-900 transition-colors cursor-pointer drop-shadow-md">
+              <h1 className="text-4xl font-bold text-primary-600 mb-2 hover:text-primary-700 transition-colors cursor-pointer drop-shadow-md">
                 Baby Tracker 👶
               </h1>
             </Link>
             <p className="text-gray-800 font-medium dark:text-gray-300">Manage your baby's information</p>
           </div>
           <Link href="/dashboard">
-            <Button variant="outline" className="border-yellow-600 text-yellow-800 hover:bg-yellow-50 font-semibold">
+            <Button variant="outline" className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold">
               ← Back to Dashboard
             </Button>
           </Link>

@@ -11,16 +11,32 @@ interface QuickStatsProps {
 }
 
 export function QuickStats({ lastFeeding, lastSleep, lastDiaper, lastPumping }: QuickStatsProps) {
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
+  const [mounted, setMounted] = useState(false)
 
-  // Update time every minute for live countdown
+  // Set initial time and update every minute (client-side only to avoid hydration mismatch)
   useEffect(() => {
+    setMounted(true)
+    setCurrentTime(new Date())
+
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 60000) // Update every minute
 
     return () => clearInterval(timer)
   }, [])
+
+  // Don't render time-dependent content until mounted (avoid hydration mismatch)
+  if (!mounted || !currentTime) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-soft p-6 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">⚡ Quick Stats</h2>
+          <div className="text-xs text-gray-500 dark:text-gray-400">Loading...</div>
+        </div>
+      </div>
+    )
+  }
 
   const getTimeAgo = (timestamp: string) => {
     try {

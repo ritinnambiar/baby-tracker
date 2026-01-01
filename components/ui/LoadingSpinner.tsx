@@ -17,8 +17,9 @@ export function LoadingSpinner({ size = 'md', text }: LoadingSpinnerProps) {
   const emojis = ['🍼', '👶', '💤', '🎯', '📊']
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <div className={`relative ${sizeClasses[size]}`}>
+    <div className="flex flex-col items-center justify-center gap-4" role="status" aria-live="polite">
+      <span className="sr-only">{text || 'Loading...'}</span>
+      <div className={`relative ${sizeClasses[size]}`} aria-hidden="true">
         {emojis.map((emoji, index) => (
           <motion.div
             key={emoji}

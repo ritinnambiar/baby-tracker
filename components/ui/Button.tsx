@@ -1,4 +1,7 @@
+'use client'
+
 import { ButtonHTMLAttributes, forwardRef } from 'react'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils/cn'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,9 +13,14 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading, children, disabled, ...props }, ref) => {
     return (
-      <button
+      <motion.button
         ref={ref}
         disabled={disabled || isLoading}
+        aria-busy={isLoading}
+        aria-disabled={disabled || isLoading}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
         className={cn(
           'inline-flex items-center justify-center rounded-3xl font-medium transition-all duration-200',
           'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
@@ -58,7 +66,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </svg>
         ) : null}
         {children}
-      </button>
+      </motion.button>
     )
   }
 )

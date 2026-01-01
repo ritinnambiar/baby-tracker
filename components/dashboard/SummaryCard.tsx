@@ -14,7 +14,7 @@ interface SummaryCardProps {
 
 export function SummaryCard({ href, bgColor, icon, title, children }: SummaryCardProps) {
   return (
-    <Link href={href}>
+    <Link href={href} aria-label={`Go to ${title} page`}>
       <motion.div
         className={`${bgColor} rounded-2xl p-6 cursor-pointer shadow-soft`}
         whileHover={{
@@ -30,6 +30,7 @@ export function SummaryCard({ href, bgColor, icon, title, children }: SummaryCar
       >
         <motion.div
           className="text-3xl mb-2 inline-block"
+          aria-hidden="true"
           whileHover={{
             scale: 1.2,
             rotate: [0, -10, 10, -10, 0],

@@ -227,13 +227,13 @@ export default function VaccinationsPage() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <Link href="/dashboard" className="text-yellow-600 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold">
+            <Link href="/dashboard" className="text-primary-500 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold">
               ← Back to Dashboard
             </Link>
-            <h1 className="text-4xl font-bold text-yellow-800 mb-2 drop-shadow-md">💉 Vaccination Schedule</h1>
+            <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">💉 Vaccination Schedule</h1>
             {activeBaby && (
               <p className="text-gray-800 font-medium dark:text-gray-400">
-                <span className="text-yellow-700 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
+                <span className="text-primary-600 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
               </p>
             )}
           </div>
@@ -293,17 +293,17 @@ export default function VaccinationsPage() {
                   .map(([ageMonths, vaccines]) => {
                     const age = parseInt(ageMonths)
                     const isPast = age <= babyAgeMonths
-                    const isUpcoming = age > babyAgeMonths && age <= babyAgeMonths + 3
+                    const isUpcoming = age > babyAgeMonths && age <= babyAgeMonths + 1
 
                     return (
-                      <Card key={ageMonths} className={isUpcoming ? 'border-2 border-yellow-400 dark:border-yellow-600' : ''}>
+                      <Card key={ageMonths} className={isUpcoming ? 'border-2 border-yellow-400 dark:border-primary-500' : ''}>
                         <div className="mb-4">
                           <div className="flex items-center justify-between">
                             <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">
                               {getAgeLabel(age)}
                             </h3>
                             {isUpcoming && (
-                              <span className="text-xs px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 rounded-full font-medium">
+                              <span className="text-xs px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-primary-600 dark:text-yellow-400 rounded-full font-medium">
                                 Coming Soon
                               </span>
                             )}

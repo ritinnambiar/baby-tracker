@@ -250,14 +250,14 @@ export default function MilestonesPage() {
           <div className="mb-8">
             <Link
               href="/dashboard"
-              className="text-yellow-600 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold"
+              className="text-primary-500 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold"
             >
               ← Back to Dashboard
             </Link>
-            <h1 className="text-4xl font-bold text-yellow-800 mb-2 drop-shadow-md">🎯 Milestones</h1>
+            <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">🎯 Milestones</h1>
             {activeBaby && (
               <p className="text-gray-800 font-medium dark:text-gray-400">
-                <span className="text-yellow-700 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
+                <span className="text-primary-600 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
               </p>
             )}
           </div>

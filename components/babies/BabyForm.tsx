@@ -176,6 +176,7 @@ export function BabyForm({ baby, onSuccess, onCancel, redirectToDashboard = fals
               onChange={handlePhotoChange}
               className="hidden"
               id="photo-upload"
+              aria-label="Upload baby photo"
             />
             <label
               htmlFor="photo-upload"
@@ -198,13 +199,15 @@ export function BabyForm({ baby, onSuccess, onCancel, redirectToDashboard = fals
       />
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label htmlFor="baby-gender" className="block text-sm font-medium text-gray-700 mb-1.5">
           Gender (Optional)
         </label>
         <select
+          id="baby-gender"
           value={formData.gender}
           onChange={(e) => setFormData({ ...formData, gender: e.target.value as any })}
-          className="w-full px-4 py-2.5 rounded-2xl border-2 border-gray-300 bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+          aria-label="Select baby gender"
+          className="w-full px-4 py-2.5 rounded-2xl border-2 border-gray-300 bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[48px]"
         >
           <option value="">Select gender</option>
           <option value="male">Boy</option>

@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef } from 'react'
+import { InputHTMLAttributes, forwardRef, useId } from 'react'
 import { cn } from '@/lib/utils/cn'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -7,17 +7,27 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, type = 'text', ...props }, ref) => {
+  ({ className, label, error, type = 'text', id, ...props }, ref) => {
+    const generatedId = useId()
+    const inputId = id || generatedId
+    const errorId = `${inputId}-error`
+
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label
+            htmlFor={inputId}
+            className="block text-sm font-medium text-gray-700 mb-1.5"
+          >
             {label}
           </label>
         )}
         <input
+          id={inputId}
           type={type}
           ref={ref}
+          aria-invalid={error ? 'true' : 'false'}
+          aria-describedby={error ? errorId : undefined}
           className={cn(
             'w-full px-4 py-3 rounded-2xl border-2 transition-all duration-200 min-h-[48px]',
             'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500',
@@ -30,7 +40,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p className="mt-1.5 text-sm text-red-600">{error}</p>
+          <p id={errorId} className="mt-1.5 text-sm text-red-600" role="alert">
+            {error}
+          </p>
         )}
       </div>
     )

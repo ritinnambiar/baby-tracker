@@ -409,16 +409,16 @@ export default function DashboardPage() {
       >
         <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+        <header className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
           <div>
             <Link href="/dashboard" className="inline-block">
-              <h1 className="text-4xl font-bold text-yellow-800 mb-2 hover:text-yellow-900 transition-colors cursor-pointer drop-shadow-md">
+              <h1 className="text-4xl font-bold text-primary-600 mb-2 hover:text-primary-700 transition-colors cursor-pointer drop-shadow-md">
                 Baby Tracker 👶
               </h1>
             </Link>
             {activeBaby ? (
               <p className="text-gray-800 font-medium">
-                Tracking for <span className="font-bold text-yellow-700">{activeBaby.name}</span>
+                Tracking for <span className="font-bold text-primary-600">{activeBaby.name}</span>
               </p>
             ) : (
               <p className="text-gray-800 font-medium">{user.email}</p>
@@ -426,13 +426,15 @@ export default function DashboardPage() {
           </div>
           <div className="flex gap-2">
             <Link href="/settings">
-              <Button variant="outline" className="border-yellow-600 text-yellow-800 hover:bg-yellow-50 font-semibold">Settings</Button>
+              <Button variant="outline" className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold" aria-label="Go to settings page">Settings</Button>
             </Link>
-            <Button variant="outline" onClick={handleLogout} className="border-yellow-600 text-yellow-800 hover:bg-yellow-50 font-semibold">
+            <Button variant="outline" onClick={handleLogout} className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold" aria-label="Log out of your account">
               Log Out
             </Button>
           </div>
-        </div>
+        </header>
+
+        <main id="main-content" aria-label="Dashboard content">
 
         {/* Quick Stats Widget */}
         {activeBaby && (
@@ -479,12 +481,12 @@ export default function DashboardPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-2xl">🎯</span>
-                      <h3 className="text-lg font-bold text-yellow-800 dark:text-yellow-200">Upcoming Milestone</h3>
+                      <h3 className="text-lg font-bold text-primary-600 dark:text-yellow-200">Upcoming Milestone</h3>
                     </div>
-                    <p className="text-yellow-900 dark:text-yellow-100 font-semibold mb-1">
+                    <p className="text-primary-700 dark:text-yellow-100 font-semibold mb-1">
                       {upcomingMilestone.title}
                     </p>
-                    <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                    <p className="text-sm text-primary-600 dark:text-yellow-300">
                       {upcomingMilestone.ageMonthsMin}-{upcomingMilestone.ageMonthsMax} months
                     </p>
                   </div>
@@ -680,6 +682,7 @@ export default function DashboardPage() {
             />
           </ReportModal>
         )}
+        </main>
         </div>
       </div>
     </PageTransition>

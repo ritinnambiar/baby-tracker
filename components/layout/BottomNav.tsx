@@ -49,7 +49,11 @@ export function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-50 safe-area-bottom">
+    <nav
+      className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-50 safe-area-bottom"
+      role="navigation"
+      aria-label="Main navigation"
+    >
       <div className="flex justify-around items-center px-1 py-1">
         {navItems.map((item) => {
           const Icon = item.icon
@@ -57,6 +61,8 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              aria-label={`${item.name} page`}
+              aria-current={item.active ? 'page' : undefined}
               className={`flex flex-col items-center justify-center flex-1 py-3 px-2 rounded-2xl transition-all min-h-[64px] ${
                 item.active
                   ? 'bg-primary-50 text-primary-600'

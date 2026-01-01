@@ -102,7 +102,7 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
                 onClick={() => setSleepType('nap')}
                 className={`py-3 px-4 rounded-2xl border-2 font-semibold transition-all ${
                   sleepType === 'nap'
-                    ? 'bg-primary-500 text-white border-primary-500'
+                    ? 'bg-gray-800 text-white border-gray-800'
                     : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                 }`}
               >
@@ -113,7 +113,7 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
                 onClick={() => setSleepType('night')}
                 className={`py-3 px-4 rounded-2xl border-2 font-semibold transition-all ${
                   sleepType === 'night'
-                    ? 'bg-primary-500 text-white border-primary-500'
+                    ? 'bg-gray-900 text-white border-gray-900'
                     : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                 }`}
               >

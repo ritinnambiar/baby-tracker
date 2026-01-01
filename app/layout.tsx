@@ -43,6 +43,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <ErrorBoundary>
           <ThemeProvider>
             <AuthProvider>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { useActiveBaby } from '@/lib/hooks/useActiveBaby'
 import { useAuth } from '@/components/auth/AuthProvider'
@@ -148,7 +149,7 @@ export function SleepTimer({ onComplete }: { onComplete?: () => void }) {
             <div className="grid grid-cols-2 gap-4">
               <Button
                 onClick={() => startSleep('nap')}
-                className="bg-baby-blue hover:bg-blue-300 py-8"
+                className="bg-gray-800 hover:bg-gray-700 text-white py-8"
                 size="lg"
               >
                 <div>
@@ -158,7 +159,7 @@ export function SleepTimer({ onComplete }: { onComplete?: () => void }) {
               </Button>
               <Button
                 onClick={() => startSleep('night')}
-                className="bg-baby-purple hover:bg-purple-300 py-8"
+                className="bg-gray-900 hover:bg-gray-800 text-white py-8"
                 size="lg"
               >
                 <div>
@@ -171,7 +172,22 @@ export function SleepTimer({ onComplete }: { onComplete?: () => void }) {
         ) : (
           <div>
             {/* Active Timer Display */}
-            <div className="bg-white rounded-2xl p-8 mb-6">
+            <motion.div
+              className="bg-white rounded-2xl p-8 mb-6"
+              animate={timerState.isActive ? {
+                scale: [1, 1.05, 1],
+                boxShadow: [
+                  '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                  '0 20px 25px -5px rgba(124, 185, 232, 0.3)',
+                  '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                ]
+              } : {}}
+              transition={{
+                duration: 1.5,
+                repeat: timerState.isActive ? Infinity : 0,
+                ease: "easeInOut"
+              }}
+            >
               <div className="text-sm font-semibold text-gray-600 mb-2 uppercase">
                 {timerState.sleepType === 'nap' ? '😴 Nap' : '🌙 Night Sleep'}
               </div>
@@ -181,7 +197,7 @@ export function SleepTimer({ onComplete }: { onComplete?: () => void }) {
               <div className="text-sm text-gray-600">
                 Started: {timerState.startedAt && new Date(timerState.startedAt).toLocaleTimeString()}
               </div>
-            </div>
+            </motion.div>
 
             {/* Controls */}
             <div className="flex gap-3">

@@ -54,6 +54,16 @@ export function GrowthCard({ measurement }: { measurement: GrowthMeasurement }) 
                 <p className="text-sm text-gray-700">{measurement.notes}</p>
               </div>
             )}
+
+            {measurement.photo_url && (
+              <div className="mt-2">
+                <img
+                  src={measurement.photo_url}
+                  alt="Growth measurement photo"
+                  className="w-full h-48 object-cover rounded-xl border-2 border-gray-200"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

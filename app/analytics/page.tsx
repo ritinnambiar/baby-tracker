@@ -235,19 +235,18 @@ export default function AnalyticsPage() {
     <PageTransition>
       <div className="min-h-screen p-4 md:p-8 page-content-mobile" style={{ background: currentTheme.gradientCSS }}>
         <div className="max-w-6xl mx-auto">
-          <div className="mb-8">
-            <Link
-              href="/dashboard"
-              className="text-primary-500 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold"
-            >
-              ← Back to Dashboard
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">📊 Analytics & Insights</h1>
+              {activeBaby && (
+                <p className="text-gray-800 font-medium dark:text-gray-400">
+                  Data insights for <span className="text-primary-600 font-bold">{activeBaby.name}</span>
+                </p>
+              )}
+            </div>
+            <Link href="/dashboard">
+              <Button variant="outline" className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold">← Back to Dashboard</Button>
             </Link>
-            <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">📊 Analytics & Insights</h1>
-            {activeBaby && (
-              <p className="text-gray-800 font-medium dark:text-gray-400">
-                Data insights for <span className="text-primary-600 font-bold">{activeBaby.name}</span>
-              </p>
-            )}
           </div>
 
           {!activeBaby ? (

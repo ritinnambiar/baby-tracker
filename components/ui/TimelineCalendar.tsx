@@ -24,6 +24,7 @@ interface TimelineCalendarProps {
 export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick }: TimelineCalendarProps) {
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [hasScrolledToToday, setHasScrolledToToday] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const todayRef = useRef<HTMLDivElement>(null)
 
@@ -54,9 +55,9 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
   // Calculate total width needed for all columns
   const totalWidth = dates.length * 150 + 64 // 150px per date + 64px for time column
 
-  // Scroll to today's date on mount
+  // Scroll to today's date on mount (only once)
   useEffect(() => {
-    if (todayRef.current && scrollContainerRef.current) {
+    if (todayRef.current && scrollContainerRef.current && !hasScrolledToToday) {
       const todayElement = todayRef.current
       const container = scrollContainerRef.current
 
@@ -66,8 +67,9 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
       const scrollPosition = todayLeft - containerWidth / 2 + 75 // 75 = half of column width (150px)
 
       container.scrollLeft = scrollPosition
+      setHasScrolledToToday(true)
     }
-  }, [dates])
+  }, [dates, hasScrolledToToday])
 
   // Time slots for y-axis (every 2 hours)
   const timeSlots = Array.from({ length: 12 }, (_, i) => i * 2) // 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22
@@ -182,6 +184,7 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
                       {dateEvents.map(event => {
                         const topPosition = getEventPosition(event)
                         const height = getEventHeight(event)
+                        const isDarkBackground = event.color.includes('gray-8') || event.color.includes('gray-9')
 
                         return (
                           <div
@@ -198,11 +201,11 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
                             <div className="p-2 overflow-hidden h-full flex flex-col justify-center">
                               <div className="flex items-center gap-1">
                                 {event.icon && <span className="text-base">{event.icon}</span>}
-                                <span className="text-xs font-bold text-gray-800 truncate">
+                                <span className={`text-xs font-bold truncate ${isDarkBackground ? 'text-white' : 'text-gray-800'}`}>
                                   {format(parseISO(event.startTime), 'h:mm')}
                                 </span>
                               </div>
-                              <div className="text-xs font-semibold text-gray-700 truncate">
+                              <div className={`text-xs font-semibold truncate ${isDarkBackground ? 'text-white' : 'text-gray-700'}`}>
                                 {event.title}
                               </div>
                             </div>

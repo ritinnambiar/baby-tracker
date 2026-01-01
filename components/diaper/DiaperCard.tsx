@@ -64,6 +64,16 @@ export function DiaperCard({ diaper }: { diaper: DiaperChange }) {
                 <p className="text-sm text-gray-700">{diaper.notes}</p>
               </div>
             )}
+
+            {diaper.photo_url && (
+              <div className="mt-2">
+                <img
+                  src={diaper.photo_url}
+                  alt="Diaper change photo"
+                  className="w-full h-48 object-cover rounded-xl border-2 border-gray-200"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -60,6 +60,16 @@ export function SleepCard({ sleep }: { sleep: SleepLog }) {
                 <p className="text-sm text-gray-700">{sleep.notes}</p>
               </div>
             )}
+
+            {sleep.photo_url && (
+              <div className="mt-2">
+                <img
+                  src={sleep.photo_url}
+                  alt="Sleep photo"
+                  className="w-full h-48 object-cover rounded-xl border-2 border-gray-200"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

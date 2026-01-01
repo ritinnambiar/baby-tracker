@@ -29,7 +29,8 @@
       "Bash(npx vercel --version)",
       "Bash(git push:*)",
       "Bash(npm run build:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }

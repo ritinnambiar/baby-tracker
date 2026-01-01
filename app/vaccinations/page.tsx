@@ -37,11 +37,16 @@ export default function VaccinationsPage() {
   const [loading, setLoading] = useState(true)
   const [selectedVaccine, setSelectedVaccine] = useState<Vaccination | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [showAddVaccineModal, setShowAddVaccineModal] = useState(false)
   const [formData, setFormData] = useState({
     administered_date: format(new Date(), 'yyyy-MM-dd'),
     notes: '',
     batch_number: '',
     administered_by: '',
+  })
+  const [newVaccineData, setNewVaccineData] = useState({
+    vaccine_name: '',
+    age_months: 0,
   })
 
   const babyAgeMonths = activeBaby ? differenceInMonths(new Date(), parseISO(activeBaby.date_of_birth)) : 0
@@ -195,6 +200,79 @@ export default function VaccinationsPage() {
     }
   }
 
+  const handleAddCustomVaccine = async () => {
+    if (!activeBaby || !user) return
+    if (!newVaccineData.vaccine_name.trim()) {
+      toast.error('Please enter a vaccine name')
+      return
+    }
+
+    try {
+      const { error } = await supabase.from('vaccinations').insert({
+        baby_id: activeBaby.id,
+        user_id: user.id,
+        vaccine_name: newVaccineData.vaccine_name,
+        age_months: newVaccineData.age_months,
+        is_completed: false,
+      })
+
+      if (error) throw error
+
+      toast.success('Custom vaccine added!')
+      setShowAddVaccineModal(false)
+      setNewVaccineData({ vaccine_name: '', age_months: 0 })
+
+      // Refresh data
+      const { data } = await supabase
+        .from('vaccinations')
+        .select('*')
+        .eq('baby_id', activeBaby.id)
+        .order('age_months', { ascending: true })
+
+      setVaccinations(data || [])
+    } catch (error) {
+      console.error('Error adding vaccine:', error)
+      toast.error('Failed to add vaccine')
+    }
+  }
+
+  const handleDeleteVaccine = async (id: string, vaccineName: string) => {
+    // Check if this is a default vaccine
+    const isDefaultVaccine = VACCINE_SCHEDULE.some(schedule =>
+      schedule.vaccines.includes(vaccineName)
+    )
+
+    if (isDefaultVaccine) {
+      toast.error('Cannot delete default vaccines. You can only delete custom vaccines.')
+      return
+    }
+
+    if (!confirm(`Delete ${vaccineName}?`)) return
+
+    try {
+      const { error } = await supabase
+        .from('vaccinations')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      toast.success('Vaccine deleted')
+
+      // Refresh data
+      const { data } = await supabase
+        .from('vaccinations')
+        .select('*')
+        .eq('baby_id', activeBaby?.id)
+        .order('age_months', { ascending: true })
+
+      setVaccinations(data || [])
+    } catch (error) {
+      console.error('Error deleting vaccine:', error)
+      toast.error('Failed to delete vaccine')
+    }
+  }
+
   const groupByAge = () => {
     const grouped: { [key: number]: Vaccination[] } = {}
     vaccinations.forEach(v => {
@@ -228,16 +306,18 @@ export default function VaccinationsPage() {
       <div className="min-h-screen p-4 md:p-8 page-content-mobile" style={{ background: currentTheme.gradientCSS }}>
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <Link href="/dashboard" className="text-primary-500 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold">
-              ← Back to Dashboard
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">💉 Vaccination Schedule</h1>
+              {activeBaby && (
+                <p className="text-gray-800 font-medium dark:text-gray-400">
+                  <span className="text-primary-600 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
+                </p>
+              )}
+            </div>
+            <Link href="/dashboard">
+              <Button variant="outline" className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold">← Back to Dashboard</Button>
             </Link>
-            <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">💉 Vaccination Schedule</h1>
-            {activeBaby && (
-              <p className="text-gray-800 font-medium dark:text-gray-400">
-                <span className="text-primary-600 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
-              </p>
-            )}
           </div>
 
           {!activeBaby ? (
@@ -288,6 +368,17 @@ export default function VaccinationsPage() {
                 </div>
               </Card>
 
+              {/* Add Custom Vaccine Button */}
+              <div className="mb-6 flex justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAddVaccineModal(true)}
+                  className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold"
+                >
+                  + Add Custom Vaccine
+                </Button>
+              </div>
+
               {/* Vaccinations by Age */}
               <div className="space-y-6">
                 {Object.entries(groupedVaccines)
@@ -306,7 +397,7 @@ export default function VaccinationsPage() {
                             </h3>
                             {isUpcoming && (
                               <span className="text-xs px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-primary-600 dark:text-yellow-400 rounded-full font-medium">
-                                Coming Soon
+                                Upcoming
                               </span>
                             )}
                             {age < babyAgeMonths && (
@@ -346,13 +437,23 @@ export default function VaccinationsPage() {
                                 </div>
                                 <div className="flex gap-2">
                                   {!vaccine.is_completed ? (
-                                    <Button
-                                      size="sm"
-                                      onClick={() => handleMarkComplete(vaccine)}
-                                      disabled={!isPast}
-                                    >
-                                      Mark Complete
-                                    </Button>
+                                    <>
+                                      <Button
+                                        size="sm"
+                                        onClick={() => handleMarkComplete(vaccine)}
+                                        disabled={!isPast}
+                                      >
+                                        Mark Complete
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleDeleteVaccine(vaccine.id, vaccine.vaccine_name)}
+                                        className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                      >
+                                        ×
+                                      </Button>
+                                    </>
                                   ) : (
                                     <Button
                                       variant="outline"
@@ -444,6 +545,61 @@ export default function VaccinationsPage() {
                   Save
                 </Button>
                 <Button variant="outline" onClick={() => setShowModal(false)} className="flex-1">
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Custom Vaccine Modal */}
+      {showAddVaccineModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setShowAddVaccineModal(false)} />
+          <div className="relative min-h-screen flex items-center justify-center p-4">
+            <div className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full p-6">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+                Add Custom Vaccine
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Add a vaccine that's not in the standard schedule
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Vaccine Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={newVaccineData.vaccine_name}
+                    onChange={(e) => setNewVaccineData({ ...newVaccineData, vaccine_name: e.target.value })}
+                    placeholder="e.g., Flu Shot, COVID-19 Booster"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Recommended Age (months) *
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="240"
+                    value={newVaccineData.age_months}
+                    onChange={(e) => setNewVaccineData({ ...newVaccineData, age_months: parseInt(e.target.value) || 0 })}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <Button onClick={handleAddCustomVaccine} className="flex-1">
+                  Add Vaccine
+                </Button>
+                <Button variant="outline" onClick={() => setShowAddVaccineModal(false)} className="flex-1">
                   Cancel
                 </Button>
               </div>

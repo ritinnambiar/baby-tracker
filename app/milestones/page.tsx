@@ -249,19 +249,18 @@ export default function MilestonesPage() {
       <div className="min-h-screen p-4 md:p-8 page-content-mobile" style={{ background: currentTheme.gradientCSS }}>
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <Link
-              href="/dashboard"
-              className="text-primary-500 dark:text-yellow-400 hover:underline text-sm mb-2 inline-block font-semibold"
-            >
-              ← Back to Dashboard
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">🎯 Milestones</h1>
+              {activeBaby && (
+                <p className="text-gray-800 font-medium dark:text-gray-400">
+                  <span className="text-primary-600 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
+                </p>
+              )}
+            </div>
+            <Link href="/dashboard">
+              <Button variant="outline" className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold">← Back to Dashboard</Button>
             </Link>
-            <h1 className="text-4xl font-bold text-primary-600 mb-2 drop-shadow-md">🎯 Milestones</h1>
-            {activeBaby && (
-              <p className="text-gray-800 font-medium dark:text-gray-400">
-                <span className="text-primary-600 font-bold">{activeBaby.name}</span> • {babyAgeMonths} months old
-              </p>
-            )}
           </div>
 
           {!activeBaby ? (
@@ -350,12 +349,20 @@ export default function MilestonesPage() {
               ) : (
                 <div className="space-y-4">
                   {filteredMilestones.map((milestone) => (
-                    <Card key={milestone.id}>
+                    <div
+                      key={milestone.id}
+                      className={`p-4 rounded-xl border-2 transition-all ${
+                        milestone.achieved_date
+                          ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700'
+                          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                      }`}
+                    >
                       <div className="flex gap-4">
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-2">
                             <div>
                               <div className="flex items-center gap-2 mb-1">
+                                {milestone.achieved_date && <span className="text-green-600 dark:text-green-400">✓</span>}
                                 <span className="text-2xl">{getCategoryEmoji(milestone.milestone_category)}</span>
                                 <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
                                   {milestone.milestone_title}
@@ -397,7 +404,7 @@ export default function MilestonesPage() {
                           />
                         )}
                       </div>
-                    </Card>
+                    </div>
                   ))}
                 </div>
               )}

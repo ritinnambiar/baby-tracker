@@ -771,3 +771,9 @@ textarea:focus {
     border-radius: 8px !important;
   }
 }
+
+/* Override Input labels to white within BabyForm (dark card background) */
+.baby-form-white-labels label,
+.caregiver-form-white-labels label {
+  color: rgb(245, 245, 255) !important;
+}

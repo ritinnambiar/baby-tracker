@@ -144,7 +144,7 @@ export function BabyForm({ baby, onSuccess, onCancel, redirectToDashboard = fals
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 baby-form-white-labels">
       <Input
         label="Baby's Name"
         type="text"
@@ -156,7 +156,7 @@ export function BabyForm({ baby, onSuccess, onCancel, redirectToDashboard = fals
 
       {/* Photo Upload */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium !text-white mb-2">
           Baby's Photo (Optional)
         </label>
         <div className="flex items-center gap-4">
@@ -184,7 +184,7 @@ export function BabyForm({ baby, onSuccess, onCancel, redirectToDashboard = fals
             >
               {photoPreview ? 'Change Photo' : 'Upload Photo'}
             </label>
-            <p className="text-xs text-gray-500 mt-1">Max 5MB (JPG, PNG, GIF)</p>
+            <p className="text-xs !text-white mt-1">Max 5MB (JPG, PNG, GIF)</p>
           </div>
         </div>
       </div>
@@ -199,7 +199,7 @@ export function BabyForm({ baby, onSuccess, onCancel, redirectToDashboard = fals
       />
 
       <div>
-        <label htmlFor="baby-gender" className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label htmlFor="baby-gender" className="block text-sm font-medium !text-white mb-1.5">
           Gender (Optional)
         </label>
         <select

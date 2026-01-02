@@ -74,7 +74,7 @@ export default function SettingsPage() {
                 Baby Tracker 👶
               </h1>
             </Link>
-            <p className="text-gray-800 font-medium dark:text-gray-300">Manage your baby's information</p>
+            <p className="!text-white font-medium">Manage your baby's information</p>
           </div>
           <Link href="/dashboard">
             <Button variant="outline" className="border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold">
@@ -140,9 +140,9 @@ export default function SettingsPage() {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-800 mb-1">{baby.name}</h3>
-                  <p className="text-sm text-gray-600">{getAgeString(baby.date_of_birth)}</p>
-                  <p className="text-xs text-gray-500">
+                  <h3 className="text-xl font-bold !text-white mb-1">{baby.name}</h3>
+                  <p className="text-sm !text-white">{getAgeString(baby.date_of_birth)}</p>
+                  <p className="text-xs !text-white">
                     Born: {format(new Date(baby.date_of_birth), 'MMM d, yyyy')}
                   </p>
                 </div>
@@ -154,19 +154,19 @@ export default function SettingsPage() {
               {baby.birth_weight && (
                 <div className="mb-4 grid grid-cols-3 gap-2 text-sm">
                   <div className="bg-baby-pink rounded-xl p-2 text-center">
-                    <div className="text-xs text-gray-600">Weight</div>
-                    <div className="font-semibold">{baby.birth_weight} kg</div>
+                    <div className="text-xs !text-black">Weight</div>
+                    <div className="font-semibold !text-black">{baby.birth_weight} kg</div>
                   </div>
                   {baby.birth_height && (
                     <div className="bg-baby-blue rounded-xl p-2 text-center">
-                      <div className="text-xs text-gray-600">Height</div>
-                      <div className="font-semibold">{baby.birth_height} cm</div>
+                      <div className="text-xs !text-black">Height</div>
+                      <div className="font-semibold !text-black">{baby.birth_height} cm</div>
                     </div>
                   )}
                   {baby.birth_head_circumference && (
                     <div className="bg-baby-yellow rounded-xl p-2 text-center">
-                      <div className="text-xs text-gray-600">Head</div>
-                      <div className="font-semibold">{baby.birth_head_circumference} cm</div>
+                      <div className="text-xs !text-black">Head</div>
+                      <div className="font-semibold !text-black">{baby.birth_head_circumference} cm</div>
                     </div>
                   )}
                 </div>
@@ -185,7 +185,7 @@ export default function SettingsPage() {
                     </Button>
                   )}
                   {activeBaby?.id === baby.id && (
-                    <div className="flex-1 text-center py-1.5 px-3 bg-primary-50 text-primary-600 rounded-3xl text-sm font-semibold">
+                    <div className="flex-1 flex items-center justify-center py-2 px-3 bg-primary-50 text-primary-600 rounded-3xl text-sm font-semibold">
                       Active Baby
                     </div>
                   )}

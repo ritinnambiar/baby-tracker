@@ -106,13 +106,13 @@ export function QuickStats({ lastFeeding, lastSleep, lastDiaper, lastPumping }: 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Last Feeding */}
         <div className="bg-baby-pink dark:bg-opacity-20 rounded-xl p-4">
-          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Last Feeding</div>
+          <div className="text-xs !text-black mb-1">Last Feeding</div>
           {lastFeeding ? (
             <>
               <div className={`text-2xl font-bold ${getAlertLevel(feedingMinutes, 'feeding')}`}>
                 {getTimeAgo(lastFeeding.started_at).replace('about ', '')}
               </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <div className="text-xs !text-black mt-1">
                 {lastFeeding.feeding_type === 'bottle' ? '🍼 Bottle' : '🤱 Breast'}
               </div>
             </>
@@ -123,13 +123,13 @@ export function QuickStats({ lastFeeding, lastSleep, lastDiaper, lastPumping }: 
 
         {/* Awake Time */}
         <div className="bg-baby-blue dark:bg-opacity-20 rounded-xl p-4">
-          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Sleep Status</div>
+          <div className="text-xs !text-black mb-1">Sleep Status</div>
           {awakeInfo ? (
             <>
               <div className={`text-2xl font-bold ${awakeInfo.minutes === 0 ? 'text-purple-500 dark:text-purple-400' : getAlertLevel(awakeInfo.minutes, 'sleep')}`}>
                 {awakeInfo.minutes === 0 ? '😴' : `${Math.floor(awakeInfo.minutes / 60)}h ${awakeInfo.minutes % 60}m`}
               </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <div className="text-xs !text-black mt-1">
                 {awakeInfo.text.replace('Awake for ', '')}
               </div>
             </>
@@ -140,13 +140,13 @@ export function QuickStats({ lastFeeding, lastSleep, lastDiaper, lastPumping }: 
 
         {/* Last Diaper */}
         <div className="bg-baby-yellow dark:bg-opacity-20 rounded-xl p-4">
-          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Last Diaper</div>
+          <div className="text-xs !text-black mb-1">Last Diaper</div>
           {lastDiaper ? (
             <>
               <div className={`text-2xl font-bold ${getAlertLevel(diaperMinutes, 'diaper')}`}>
                 {getTimeAgo(lastDiaper.changed_at).replace('about ', '')}
               </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <div className="text-xs !text-black mt-1">
                 Changed
               </div>
             </>
@@ -157,13 +157,13 @@ export function QuickStats({ lastFeeding, lastSleep, lastDiaper, lastPumping }: 
 
         {/* Last Pumping */}
         <div className="bg-baby-purple dark:bg-opacity-20 rounded-xl p-4">
-          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Last Pumping</div>
+          <div className="text-xs !text-black mb-1">Last Pumping</div>
           {lastPumping ? (
             <>
               <div className="text-2xl font-bold text-purple-500 dark:text-purple-400">
                 {getTimeAgo(lastPumping.started_at).replace('about ', '')}
               </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <div className="text-xs !text-black mt-1">
                 Session
               </div>
             </>

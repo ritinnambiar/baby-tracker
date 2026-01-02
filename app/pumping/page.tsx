@@ -146,8 +146,8 @@ export default function PumpingPage() {
           >
             <div className="text-center">
               <div className="text-5xl mb-3">📅</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-1">Schedule</h3>
-              <p className="text-sm text-gray-600">View pumping history</p>
+              <h3 className={`text-xl font-bold mb-1 ${mode === 'schedule' ? '!text-black' : 'text-gray-800'}`}>Schedule</h3>
+              <p className={`text-sm ${mode === 'schedule' ? '!text-black' : 'text-gray-600'}`}>View pumping history</p>
             </div>
           </button>
 
@@ -161,8 +161,8 @@ export default function PumpingPage() {
           >
             <div className="text-center">
               <div className="text-5xl mb-3">💧</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-1">Log Session</h3>
-              <p className="text-sm text-gray-600">Record pumping</p>
+              <h3 className={`text-xl font-bold mb-1 ${mode === 'log' ? '!text-black' : 'text-gray-800'}`}>Log Session</h3>
+              <p className={`text-sm ${mode === 'log' ? '!text-black' : 'text-gray-600'}`}>Record pumping</p>
             </div>
           </button>
         </div>

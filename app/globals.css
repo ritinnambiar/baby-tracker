@@ -3,20 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 249, 228;
-  --background-end-rgb: 255, 255, 255;
-}
-
-/* Dark mode colors - softer pastels for dark theme */
-.dark {
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 30, 30, 40;
   --background-end-rgb: 20, 20, 30;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
+  color: rgb(245, 245, 255);
   background: linear-gradient(
       to bottom,
       transparent,
@@ -25,6 +18,233 @@ body {
     rgb(var(--background-start-rgb));
   min-height: 100vh;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Page headings and main content text should be white on dark page background */
+h1, h2, h3, h4, h5, h6, p {
+  color: rgb(245, 245, 255);
+}
+
+/* All text-gray classes should be white on dark background by default */
+.text-gray-500,
+.text-gray-600,
+.text-gray-700,
+.text-gray-800,
+.text-gray-900 {
+  color: rgb(245, 245, 255) !important;
+}
+
+/* Keep dark text for gray text classes on light colored backgrounds */
+.bg-baby-pink .text-gray-400,
+.bg-baby-pink .text-gray-500,
+.bg-baby-pink .text-gray-600,
+.bg-baby-pink .text-gray-700,
+.bg-baby-pink .text-gray-800,
+.bg-baby-pink .text-gray-900,
+.bg-baby-blue .text-gray-400,
+.bg-baby-blue .text-gray-500,
+.bg-baby-blue .text-gray-600,
+.bg-baby-blue .text-gray-700,
+.bg-baby-blue .text-gray-800,
+.bg-baby-blue .text-gray-900,
+.bg-baby-yellow .text-gray-400,
+.bg-baby-yellow .text-gray-500,
+.bg-baby-yellow .text-gray-600,
+.bg-baby-yellow .text-gray-700,
+.bg-baby-yellow .text-gray-800,
+.bg-baby-yellow .text-gray-900,
+.bg-baby-green .text-gray-400,
+.bg-baby-green .text-gray-500,
+.bg-baby-green .text-gray-600,
+.bg-baby-green .text-gray-700,
+.bg-baby-green .text-gray-800,
+.bg-baby-green .text-gray-900,
+.bg-baby-purple .text-gray-400,
+.bg-baby-purple .text-gray-500,
+.bg-baby-purple .text-gray-600,
+.bg-baby-purple .text-gray-700,
+.bg-baby-purple .text-gray-800,
+.bg-baby-purple .text-gray-900,
+.bg-baby-peach .text-gray-400,
+.bg-baby-peach .text-gray-500,
+.bg-baby-peach .text-gray-600,
+.bg-baby-peach .text-gray-700,
+.bg-baby-peach .text-gray-800,
+.bg-baby-peach .text-gray-900 {
+  color: rgb(31, 41, 55) !important;
+}
+
+/* Force dark text for gray classes on baby backgrounds even in dark mode */
+.dark .bg-baby-pink .text-gray-400,
+.dark .bg-baby-pink .text-gray-500,
+.dark .bg-baby-pink .text-gray-600,
+.dark .bg-baby-pink .text-gray-700,
+.dark .bg-baby-pink .text-gray-800,
+.dark .bg-baby-pink .text-gray-900,
+.dark .bg-baby-pink .dark\:text-gray-400,
+.dark .bg-baby-pink .dark\:text-gray-500,
+.dark .bg-baby-pink .dark\:text-gray-600,
+.dark .bg-baby-blue .text-gray-400,
+.dark .bg-baby-blue .text-gray-500,
+.dark .bg-baby-blue .text-gray-600,
+.dark .bg-baby-blue .text-gray-700,
+.dark .bg-baby-blue .text-gray-800,
+.dark .bg-baby-blue .text-gray-900,
+.dark .bg-baby-blue .dark\:text-gray-400,
+.dark .bg-baby-blue .dark\:text-gray-500,
+.dark .bg-baby-blue .dark\:text-gray-600,
+.dark .bg-baby-yellow .text-gray-400,
+.dark .bg-baby-yellow .text-gray-500,
+.dark .bg-baby-yellow .text-gray-600,
+.dark .bg-baby-yellow .text-gray-700,
+.dark .bg-baby-yellow .text-gray-800,
+.dark .bg-baby-yellow .text-gray-900,
+.dark .bg-baby-yellow .dark\:text-gray-400,
+.dark .bg-baby-yellow .dark\:text-gray-500,
+.dark .bg-baby-yellow .dark\:text-gray-600,
+.dark .bg-baby-green .text-gray-400,
+.dark .bg-baby-green .text-gray-500,
+.dark .bg-baby-green .text-gray-600,
+.dark .bg-baby-green .text-gray-700,
+.dark .bg-baby-green .text-gray-800,
+.dark .bg-baby-green .text-gray-900,
+.dark .bg-baby-green .dark\:text-gray-400,
+.dark .bg-baby-green .dark\:text-gray-500,
+.dark .bg-baby-green .dark\:text-gray-600,
+.dark .bg-baby-purple .text-gray-400,
+.dark .bg-baby-purple .text-gray-500,
+.dark .bg-baby-purple .text-gray-600,
+.dark .bg-baby-purple .text-gray-700,
+.dark .bg-baby-purple .text-gray-800,
+.dark .bg-baby-purple .text-gray-900,
+.dark .bg-baby-purple .dark\:text-gray-400,
+.dark .bg-baby-purple .dark\:text-gray-500,
+.dark .bg-baby-purple .dark\:text-gray-600,
+.dark .bg-baby-peach .text-gray-400,
+.dark .bg-baby-peach .text-gray-500,
+.dark .bg-baby-peach .text-gray-600,
+.dark .bg-baby-peach .text-gray-700,
+.dark .bg-baby-peach .text-gray-800,
+.dark .bg-baby-peach .text-gray-900,
+.dark .bg-baby-peach .dark\:text-gray-400,
+.dark .bg-baby-peach .dark\:text-gray-500,
+.dark .bg-baby-peach .dark\:text-gray-600 {
+  color: rgb(31, 41, 55) !important;
+}
+
+/* Text colors - white only on dark backgrounds (bg-white, bg-gray-50, etc) */
+.bg-white .text-gray-800,
+.bg-white .text-gray-700,
+.bg-white .text-gray-900,
+.bg-white .text-black,
+.bg-gray-50 .text-gray-800,
+.bg-gray-50 .text-gray-700,
+.bg-gray-50 .text-gray-900,
+.bg-gray-50 .text-black,
+.bg-gray-100 .text-gray-800,
+.bg-gray-100 .text-gray-700,
+.bg-gray-100 .text-gray-900,
+.bg-gray-100 .text-black {
+  color: rgb(245, 245, 255) !important;
+}
+
+.bg-white .text-gray-600,
+.bg-gray-50 .text-gray-600,
+.bg-gray-100 .text-gray-600 {
+  color: rgb(200, 200, 220) !important;
+}
+
+.bg-white .text-gray-500,
+.bg-gray-50 .text-gray-500,
+.bg-gray-100 .text-gray-500 {
+  color: rgb(180, 180, 200) !important;
+}
+
+.bg-white .text-gray-400,
+.bg-gray-50 .text-gray-400,
+.bg-gray-100 .text-gray-400 {
+  color: rgb(160, 160, 180) !important;
+}
+
+/* Global background overrides - dark colors as default */
+.bg-white {
+  background-color: rgb(35, 35, 45) !important;
+}
+
+.bg-gray-50 {
+  background-color: rgb(30, 30, 40) !important;
+}
+
+.bg-gray-100 {
+  background-color: rgb(40, 40, 50) !important;
+}
+
+.bg-gray-200 {
+  background-color: rgb(45, 45, 55) !important;
+}
+
+.bg-gray-700 {
+  background-color: rgb(45, 45, 55) !important;
+}
+
+.bg-gray-800 {
+  background-color: rgb(30, 30, 40) !important;
+}
+
+/* Baby color backgrounds - muted colors for dark theme */
+.bg-baby-pink {
+  background-color: rgb(255, 228, 233) !important;
+}
+
+.bg-baby-blue {
+  background-color: rgb(228, 241, 255) !important;
+}
+
+.bg-baby-yellow {
+  background-color: rgb(255, 249, 228) !important;
+}
+
+.bg-baby-green {
+  background-color: rgb(228, 255, 237) !important;
+}
+
+.bg-baby-purple {
+  background-color: rgb(243, 228, 255) !important;
+}
+
+.bg-baby-peach {
+  background-color: rgb(255, 228, 214) !important;
+}
+
+/* Border colors */
+.border-gray-200 {
+  border-color: rgb(60, 60, 70) !important;
+}
+
+.border-gray-300 {
+  border-color: rgb(70, 70, 80) !important;
+}
+
+/* Input fields */
+input,
+select,
+textarea {
+  background-color: rgb(40, 40, 50) !important;
+  border-color: rgb(70, 70, 80) !important;
+  color: rgb(245, 245, 255) !important;
+}
+
+input::placeholder,
+select::placeholder,
+textarea::placeholder {
+  color: rgb(140, 140, 160) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgb(255, 107, 138) !important;
+  background-color: rgb(45, 45, 55) !important;
 }
 
 /* Custom baby theme styles */

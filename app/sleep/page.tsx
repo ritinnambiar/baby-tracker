@@ -193,8 +193,8 @@ export default function SleepPage() {
           >
             <div className="text-center">
               <div className="text-5xl mb-3">✏️</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-1">Manual</h3>
-              <p className="text-sm text-gray-600">Log past sleep</p>
+              <h3 className={`text-xl font-bold mb-1 ${mode === 'manual' ? '!text-black' : 'text-gray-800'}`}>Manual</h3>
+              <p className={`text-sm ${mode === 'manual' ? '!text-black' : 'text-gray-600'}`}>Log past sleep</p>
             </div>
           </button>
         </div>

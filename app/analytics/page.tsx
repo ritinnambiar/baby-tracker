@@ -286,7 +286,7 @@ export default function AnalyticsPage() {
                         <div className="text-3xl font-bold text-primary-500">
                           {insights.avgFeedingsPerDay}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm !text-black">
                           Feedings/day
                         </div>
                       </div>
@@ -294,7 +294,7 @@ export default function AnalyticsPage() {
                         <div className="text-3xl font-bold text-accent-500">
                           {insights.avgSleepPerDay}h
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm !text-black">
                           Sleep/day
                         </div>
                       </div>
@@ -302,7 +302,7 @@ export default function AnalyticsPage() {
                         <div className="text-3xl font-bold text-primary-500">
                           {insights.avgDiapersPerDay}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm !text-black">
                           Diapers/day
                         </div>
                       </div>
@@ -310,7 +310,7 @@ export default function AnalyticsPage() {
                         <div className="text-3xl font-bold text-green-600">
                           {insights.longestSleepHours}h {insights.longestSleepMins}m
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm !text-black">
                           Longest sleep
                         </div>
                       </div>
@@ -324,11 +324,11 @@ export default function AnalyticsPage() {
                     </h2>
                     <ResponsiveContainer width="100%" height={300}>
                       <LineChart data={dailyTrends}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                        <XAxis dataKey="date" tick={{ fill: '#fff' }} />
+                        <YAxis tick={{ fill: '#fff' }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }} />
+                        <Legend wrapperStyle={{ color: '#fff' }} />
                         <Line
                           type="monotone"
                           dataKey="feedings"
@@ -368,12 +368,13 @@ export default function AnalyticsPage() {
                             outerRadius={80}
                             fill="#8884d8"
                             dataKey="value"
+                            style={{ fill: '#fff', fontSize: '14px' }}
                           >
                             {feedingBreakdown.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Pie>
-                          <Tooltip />
+                          <Tooltip contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }} />
                         </PieChart>
                       </ResponsiveContainer>
                     </Card>
@@ -393,12 +394,13 @@ export default function AnalyticsPage() {
                             outerRadius={80}
                             fill="#8884d8"
                             dataKey="value"
+                            style={{ fill: '#fff', fontSize: '14px' }}
                           >
                             {diaperBreakdown.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Pie>
-                          <Tooltip />
+                          <Tooltip contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }} />
                         </PieChart>
                       </ResponsiveContainer>
                     </Card>
@@ -411,11 +413,11 @@ export default function AnalyticsPage() {
                     </h2>
                     <ResponsiveContainer width="100%" height={250}>
                       <BarChart data={sleepPatterns}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                        <XAxis dataKey="name" tick={{ fill: '#fff' }} />
+                        <YAxis tick={{ fill: '#fff' }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }} />
+                        <Legend wrapperStyle={{ color: '#fff' }} />
                         <Bar dataKey="hours" fill="#0074FF" name="Total Hours" />
                         <Bar dataKey="count" fill="#10B981" name="Session Count" />
                       </BarChart>

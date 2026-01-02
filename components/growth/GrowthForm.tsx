@@ -82,7 +82,7 @@ export function GrowthForm({ onComplete }: { onComplete?: () => void }) {
   return (
     <Card className="bg-gradient-to-br from-baby-green to-baby-blue">
       <form onSubmit={handleSubmit}>
-        <h3 className="text-2xl font-bold text-gray-800 mb-6">Log Growth Measurement</h3>
+        <h3 className="text-2xl font-bold !text-black mb-6">Log Growth Measurement</h3>
 
         <div className="space-y-4">
           {/* Weight */}

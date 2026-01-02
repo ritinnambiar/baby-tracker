@@ -88,12 +88,12 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
   return (
     <Card className="bg-gradient-to-br from-baby-yellow to-baby-green">
       <form onSubmit={handleSubmit}>
-        <h3 className="text-2xl font-bold text-gray-800 mb-6">Manual Sleep Entry</h3>
+        <h3 className="text-2xl font-bold !text-black mb-6">Manual Sleep Entry</h3>
 
         <div className="space-y-4">
           {/* Sleep Type Selector */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium !text-black mb-2">
               Sleep Type
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -124,7 +124,7 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
 
           {/* Start Time */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium !text-black mb-1.5">
               Start Time
             </label>
             <input
@@ -139,7 +139,7 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
 
           {/* End Time */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium !text-black mb-1.5">
               End Time
             </label>
             <input
@@ -163,7 +163,7 @@ export function SleepForm({ onComplete }: { onComplete?: () => void }) {
 
           {user && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-sm font-medium !text-black mb-1.5">
                 Photo (Optional)
               </label>
               <ImageUpload

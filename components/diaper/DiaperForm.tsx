@@ -78,12 +78,12 @@ export function DiaperForm({ onComplete }: { onComplete?: () => void }) {
   return (
     <Card className="bg-gradient-to-br from-baby-yellow to-baby-green">
       <form onSubmit={handleSubmit}>
-        <h3 className="text-2xl font-bold text-gray-800 mb-6">Log Diaper Change</h3>
+        <h3 className="text-2xl font-bold !text-black mb-6">Log Diaper Change</h3>
 
         <div className="space-y-4">
           {/* Diaper Type Checkboxes */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium !text-black mb-3">
               Diaper Type
             </label>
             <div className="space-y-3">
@@ -94,7 +94,7 @@ export function DiaperForm({ onComplete }: { onComplete?: () => void }) {
                   onChange={(e) => setIsWet(e.target.checked)}
                   className="w-5 h-5 text-primary-500 rounded focus:ring-primary-500"
                 />
-                <span className="flex-1 font-medium text-gray-800">💧 Wet</span>
+                <span className="flex-1 font-medium !text-white">💧 Wet</span>
               </label>
 
               <label className="flex items-center gap-3 p-4 bg-white rounded-2xl border-2 border-gray-300 cursor-pointer hover:border-primary-500 transition-all">
@@ -104,14 +104,14 @@ export function DiaperForm({ onComplete }: { onComplete?: () => void }) {
                   onChange={(e) => setIsDirty(e.target.checked)}
                   className="w-5 h-5 text-primary-500 rounded focus:ring-primary-500"
                 />
-                <span className="flex-1 font-medium text-gray-800">💩 Dirty</span>
+                <span className="flex-1 font-medium !text-white">💩 Dirty</span>
               </label>
             </div>
           </div>
 
           {/* Time */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium !text-black mb-1.5">
               Time
             </label>
             <input
@@ -136,7 +136,7 @@ export function DiaperForm({ onComplete }: { onComplete?: () => void }) {
           {/* Photo Upload */}
           {user && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-sm font-medium !text-black mb-1.5">
                 Photo (Optional)
               </label>
               <ImageUpload

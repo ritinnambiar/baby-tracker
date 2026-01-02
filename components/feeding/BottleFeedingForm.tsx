@@ -73,7 +73,7 @@ export function BottleFeedingForm({ onComplete }: { onComplete?: () => void }) {
   return (
     <Card className="bg-gradient-to-br from-baby-blue to-baby-green">
       <form onSubmit={handleSubmit}>
-        <h3 className="text-2xl font-bold text-gray-800 mb-6">Bottle Feeding</h3>
+        <h3 className="text-2xl font-bold !text-black mb-6">Bottle Feeding</h3>
 
         <div className="space-y-4">
           <Input
@@ -87,7 +87,7 @@ export function BottleFeedingForm({ onComplete }: { onComplete?: () => void }) {
           />
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium !text-black mb-1.5">
               Time
             </label>
             <input

@@ -39,7 +39,7 @@ export const themes: Record<ThemeName, Theme> = {
       text: '#1F2937',
     },
     gradient: 'from-[#FFE4E9] via-[#E4F1FF] to-[#FFF9E4]',
-    gradientCSS: '#FFE4E9',
+    gradientCSS: '#1a1a1a',
   },
   'candy-ice-cream': {
     name: 'candy-ice-cream',
@@ -53,7 +53,7 @@ export const themes: Record<ThemeName, Theme> = {
       text: '#2D3748',
     },
     gradient: 'from-[#B8E6D5] via-[#E6D5F5] to-[#FFB5A7]',
-    gradientCSS: '#B8E6D5',
+    gradientCSS: '#1e1e1e',
   },
   'rainbow-nursery': {
     name: 'rainbow-nursery',
@@ -67,7 +67,7 @@ export const themes: Record<ThemeName, Theme> = {
       text: '#1F2937',
     },
     gradient: 'from-[#F5D5CF] via-[#FFF4D1] to-[#D5EDE9]',
-    gradientCSS: '#F5D5CF',
+    gradientCSS: '#1f2937',
   },
   'ocean-baby': {
     name: 'ocean-baby',
@@ -81,7 +81,7 @@ export const themes: Record<ThemeName, Theme> = {
       text: '#2C3E50',
     },
     gradient: 'from-[#A8E6E3] via-[#FFB5A7] to-[#F5E6D3]',
-    gradientCSS: '#A8E6E3',
+    gradientCSS: '#0f172a',
   },
   'woodland-forest': {
     name: 'woodland-forest',
@@ -95,7 +95,7 @@ export const themes: Record<ThemeName, Theme> = {
       text: '#3E4A3D',
     },
     gradient: 'from-[#C8D5B9] via-[#FAF3E0] to-[#E8B4A0]',
-    gradientCSS: '#C8D5B9',
+    gradientCSS: '#18181b',
   },
   'dreamy-clouds': {
     name: 'dreamy-clouds',
@@ -109,7 +109,7 @@ export const themes: Record<ThemeName, Theme> = {
       text: '#4A5568',
     },
     gradient: 'from-[#BFDBF7] via-[#F8F9FA] to-[#FFE89C]',
-    gradientCSS: '#BFDBF7',
+    gradientCSS: '#111827',
   },
   'bubblegum-pop': {
     name: 'bubblegum-pop',
@@ -123,7 +123,7 @@ export const themes: Record<ThemeName, Theme> = {
       text: '#2D3748',
     },
     gradient: 'from-[#FFB6D9] via-[#D4B5F0] to-[#FFD19C]',
-    gradientCSS: '#FFB6D9',
+    gradientCSS: '#171717',
   },
 }
 

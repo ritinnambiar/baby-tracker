@@ -141,11 +141,11 @@ export function SleepTimer({ onComplete }: { onComplete?: () => void }) {
   return (
     <Card className="bg-gradient-to-br from-baby-blue to-baby-purple">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-6">Sleep Timer</h3>
+        <h3 className="text-2xl font-bold !text-black mb-6">Sleep Timer</h3>
 
         {!timerState.isActive ? (
           <div className="space-y-4">
-            <p className="text-gray-600 mb-4">Start tracking sleep session</p>
+            <p className="!text-black mb-4">Start tracking sleep session</p>
             <div className="grid grid-cols-2 gap-4">
               <Button
                 onClick={() => startSleep('nap')}

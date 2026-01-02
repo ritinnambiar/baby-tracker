@@ -121,7 +121,7 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
             {/* Time labels column (fixed) */}
             <div className="sticky left-0 z-10 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex-shrink-0" style={{ width: '64px' }}>
               <div className="w-full h-16 border-b border-gray-200 dark:border-gray-700 flex items-center justify-center">
-                <span className="text-xs font-medium text-gray-500">Time</span>
+                <span className="text-xs font-medium !text-white">Time</span>
               </div>
               <div className="relative" style={{ height: '600px' }}>
                 {timeSlots.map(hour => (
@@ -130,7 +130,7 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
                     className="absolute left-0 right-0 border-t border-gray-200 dark:border-gray-700"
                     style={{ top: `${(hour / 24) * 100}%` }}
                   >
-                    <span className="text-xs text-gray-500 px-2">
+                    <span className="text-xs !text-white px-2">
                       {format(new Date().setHours(hour, 0, 0, 0), 'ha')}
                     </span>
                   </div>
@@ -159,13 +159,13 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
                       className={`w-full h-16 border-b border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center transition-all hover:shadow-md ${
                         isToday ? 'bg-primary-500 text-white' : isSelected ? 'bg-accent-500 text-white' : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
                       }`}>
-                      <span className={`text-xs font-medium ${isToday || isSelected ? 'text-white/90' : 'text-gray-500'}`}>
+                      <span className={`text-xs font-medium ${isToday || isSelected ? 'text-white/90' : '!text-white'}`}>
                         {format(date, 'MMM')}
                       </span>
-                      <span className={`text-sm font-medium ${isToday || isSelected ? '' : 'text-gray-700 dark:text-gray-300'}`}>
+                      <span className={`text-sm font-medium ${isToday || isSelected ? '' : '!text-white'}`}>
                         {format(date, 'EEE')}
                       </span>
-                      <span className={`text-lg font-bold ${isToday || isSelected ? '' : 'text-gray-800 dark:text-gray-200'}`}>
+                      <span className={`text-lg font-bold ${isToday || isSelected ? '' : '!text-white'}`}>
                         {format(date, 'd')}
                       </span>
                     </button>
@@ -202,11 +202,11 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
                             <div className="p-2 overflow-hidden h-full flex flex-col justify-center">
                               <div className="flex items-center gap-1">
                                 {event.icon && <span className="text-base">{event.icon}</span>}
-                                <span className={`text-xs font-bold truncate ${isDarkBackground ? 'text-white' : 'text-gray-800'}`}>
+                                <span className={`text-xs font-bold truncate ${isDarkBackground ? 'text-white' : '!text-black'}`}>
                                   {format(parseISO(event.startTime), 'h:mm')}
                                 </span>
                               </div>
-                              <div className={`text-xs font-semibold truncate ${isDarkBackground ? 'text-white' : 'text-gray-700'}`}>
+                              <div className={`text-xs font-semibold truncate ${isDarkBackground ? 'text-white' : '!text-black'}`}>
                                 {event.title}
                               </div>
                             </div>
@@ -228,16 +228,16 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 {selectedEvent.icon && <span className="text-2xl">{selectedEvent.icon}</span>}
-                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                <h3 className="text-lg font-bold !text-white">
                   {selectedEvent.title}
                 </h3>
               </div>
               {selectedEvent.subtitle && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                <p className="text-sm !text-white mb-2">
                   {selectedEvent.subtitle}
                 </p>
               )}
-              <div className="text-sm text-gray-700 dark:text-gray-300">
+              <div className="text-sm !text-white">
                 <span className="font-medium">Time: </span>
                 {format(parseISO(selectedEvent.startTime), 'MMM d, h:mm a')}
                 {selectedEvent.endTime && (
@@ -247,7 +247,7 @@ export function TimelineCalendar({ events, dateRange, onEventClick, onDateClick 
             </div>
             <button
               onClick={() => setSelectedEvent(null)}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="!text-white hover:!text-gray-300"
             >
               ✕
             </button>

@@ -179,7 +179,7 @@ export function NursingTimer({ onComplete }: { onComplete?: () => void }) {
   return (
     <Card className="bg-gradient-to-br from-baby-pink to-baby-purple">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-6">Nursing Timer</h3>
+        <h3 className="text-2xl font-bold !text-black mb-6">Nursing Timer</h3>
 
         {/* Timer Display */}
         <div className="grid grid-cols-2 gap-4 mb-6">

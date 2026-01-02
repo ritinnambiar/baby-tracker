@@ -163,8 +163,8 @@ export default function FeedingPage() {
           >
             <div className="text-center">
               <div className="text-5xl mb-3">📅</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-1">Schedule</h3>
-              <p className="text-sm text-gray-600">View feeding history</p>
+              <h3 className={`text-xl font-bold mb-1 ${mode === 'schedule' ? '!text-black' : 'text-gray-800'}`}>Schedule</h3>
+              <p className={`text-sm ${mode === 'schedule' ? '!text-black' : 'text-gray-600'}`}>View feeding history</p>
             </div>
           </button>
 
@@ -178,8 +178,8 @@ export default function FeedingPage() {
           >
             <div className="text-center">
               <div className="text-5xl mb-3">🤱</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-1">Nursing</h3>
-              <p className="text-sm text-gray-600">Track breastfeeding</p>
+              <h3 className={`text-xl font-bold mb-1 ${mode === 'nursing' ? '!text-black' : 'text-gray-800'}`}>Nursing</h3>
+              <p className={`text-sm ${mode === 'nursing' ? '!text-black' : 'text-gray-600'}`}>Track breastfeeding</p>
             </div>
           </button>
 
@@ -193,8 +193,8 @@ export default function FeedingPage() {
           >
             <div className="text-center">
               <div className="text-5xl mb-3">🍼</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-1">Bottle</h3>
-              <p className="text-sm text-gray-600">Log bottle feeding</p>
+              <h3 className={`text-xl font-bold mb-1 ${mode === 'bottle' ? '!text-black' : 'text-gray-800'}`}>Bottle</h3>
+              <p className={`text-sm ${mode === 'bottle' ? '!text-black' : 'text-gray-600'}`}>Log bottle feeding</p>
             </div>
           </button>
         </div>

@@ -52,7 +52,7 @@ export default function SignupPage() {
           <h1 className="text-4xl font-bold text-primary-500 mb-2">
             Baby Tracker
           </h1>
-          <p className="text-gray-600">Create your account to get started</p>
+          <p className="!text-white">Create your account to get started</p>
         </div>
 
         {/* Signup Card */}
@@ -93,7 +93,7 @@ export default function SignupPage() {
               minLength={6}
             />
 
-            <p className="text-xs text-gray-500">
+            <p className="text-xs !text-white opacity-70">
               Password must be at least 6 characters long
             </p>
 
@@ -108,7 +108,7 @@ export default function SignupPage() {
           </form>
 
           {/* Sign In Link */}
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm !text-white">
             Already have an account?{' '}
             <Link
               href="/login"

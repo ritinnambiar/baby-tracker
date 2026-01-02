@@ -54,7 +54,7 @@ function LoginForm() {
           <h1 className="text-4xl font-bold text-primary-500 mb-2">
             Baby Tracker
           </h1>
-          <p className="text-gray-600">Welcome back! Sign in to continue</p>
+          <p className="!text-white">Welcome back! Sign in to continue</p>
         </div>
 
         {/* Login Card */}
@@ -96,7 +96,7 @@ function LoginForm() {
           </form>
 
           {/* Sign Up Link */}
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm !text-white">
             Don't have an account?{' '}
             <Link
               href="/signup"
@@ -117,7 +117,7 @@ export default function LoginPage() {
       <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-baby-pink via-baby-blue to-baby-yellow">
         <div className="text-center">
           <div className="text-4xl mb-4">👶</div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="!text-white">Loading...</p>
         </div>
       </div>
     }>

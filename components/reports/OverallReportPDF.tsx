@@ -12,6 +12,9 @@ interface OverallReportPDFProps {
   sleeps: SleepLog[]
   diapers: DiaperChange[]
   pumpings: PumpingLog[]
+  growths: any[]
+  medications: any[]
+  vaccinations: any[]
   dateRange: { start: Date; end: Date }
   babyName: string
 }
@@ -129,9 +132,26 @@ const styles = StyleSheet.create({
     color: '#000000',
     textAlign: 'center',
   },
+  compactList: {
+    marginTop: 4,
+  },
+  compactListItem: {
+    fontSize: 7,
+    marginBottom: 2,
+    paddingLeft: 6,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  compactLabel: {
+    fontWeight: 'bold',
+    flex: 1,
+  },
+  compactValue: {
+    flex: 2,
+  },
 })
 
-export function OverallReportPDF({ feedings, sleeps, diapers, pumpings, dateRange, babyName }: OverallReportPDFProps) {
+export function OverallReportPDF({ feedings, sleeps, diapers, pumpings, growths, medications, vaccinations, dateRange, babyName }: OverallReportPDFProps) {
   // Calculate statistics
   const daysDiff = Math.ceil((dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24)) || 1
 
@@ -324,9 +344,71 @@ export function OverallReportPDF({ feedings, sleeps, diapers, pumpings, dateRang
           </View>
         )}
 
+        {/* Growth Measurements */}
+        {growths.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              {totalPumpingSessions > 0 ? '5' : '4'}. GROWTH MEASUREMENTS
+            </Text>
+            <View style={styles.compactList}>
+              {growths.slice(0, 3).map((growth: any, idx: number) => (
+                <View key={idx} style={styles.compactListItem}>
+                  <Text style={styles.compactLabel}>{format(new Date(growth.measured_at), 'MMM d, yyyy')}:</Text>
+                  <Text style={styles.compactValue}>
+                    {growth.weight_kg && `Weight: ${growth.weight_kg} kg`}
+                    {growth.height_cm && ` | Height: ${growth.height_cm} cm`}
+                    {growth.head_circumference_cm && ` | Head: ${growth.head_circumference_cm} cm`}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Medications */}
+        {medications.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              {(totalPumpingSessions > 0 ? 5 : 4) + (growths.length > 0 ? 1 : 0)}. MEDICATIONS ADMINISTERED
+            </Text>
+            <View style={styles.compactList}>
+              {medications.map((med: any, idx: number) => (
+                <View key={idx} style={styles.compactListItem}>
+                  <Text style={styles.compactLabel}>{med.medications?.medication_name || 'Unknown'}:</Text>
+                  <Text style={styles.compactValue}>
+                    {med.medications?.dosage} {med.medications?.unit} - {format(new Date(med.administered_at), 'MMM d, h:mm a')}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Vaccinations */}
+        {vaccinations.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              {(totalPumpingSessions > 0 ? 5 : 4) + (growths.length > 0 ? 1 : 0) + (medications.length > 0 ? 1 : 0)}. VACCINATIONS
+            </Text>
+            <View style={styles.compactList}>
+              {vaccinations.map((vax: any, idx: number) => (
+                <View key={idx} style={styles.compactListItem}>
+                  <Text style={styles.compactLabel}>{vax.vaccine_name}:</Text>
+                  <Text style={styles.compactValue}>
+                    {format(new Date(vax.administered_date), 'MMM d, yyyy')}
+                    {vax.notes && ` - ${vax.notes}`}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
         {/* Quick Stats */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{totalPumpingSessions > 0 ? '5' : '4'}. QUICK STATS</Text>
+          <Text style={styles.sectionTitle}>
+            {(totalPumpingSessions > 0 ? 5 : 4) + (growths.length > 0 ? 1 : 0) + (medications.length > 0 ? 1 : 0) + (vaccinations.length > 0 ? 1 : 0)}. QUICK STATS
+          </Text>
           <View style={styles.observations}>
             <Text style={styles.observationItem}>
               • Feeding frequency: {avgFeedingsPerDay} feeds per day

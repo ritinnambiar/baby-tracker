@@ -11,11 +11,14 @@ interface OverallReportProps {
   sleeps: SleepLog[]
   diapers: DiaperChange[]
   pumpings: PumpingLog[]
+  growths: any[]
+  medications: any[]
+  vaccinations: any[]
   dateRange: { start: Date; end: Date }
   babyName: string
 }
 
-export function OverallReport({ feedings, sleeps, diapers, pumpings, dateRange, babyName }: OverallReportProps) {
+export function OverallReport({ feedings, sleeps, diapers, pumpings, growths, medications, vaccinations, dateRange, babyName }: OverallReportProps) {
   // Calculate date range
   const daysDiff = Math.ceil((dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24)) || 1
 
@@ -92,23 +95,23 @@ export function OverallReport({ feedings, sleeps, diapers, pumpings, dateRange, 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
           <div className="bg-baby-pink dark:bg-opacity-20 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center">
             <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2">🍼</div>
-            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">{totalFeedings}</div>
-            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">Feedings</div>
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold !text-black">{totalFeedings}</div>
+            <div className="text-xs sm:text-sm !text-black mt-1">Feedings</div>
           </div>
           <div className="bg-baby-purple dark:bg-opacity-20 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center">
             <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2">😴</div>
-            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-accent-600 dark:text-accent-400">{totalSleeps}</div>
-            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">Sleep Sessions</div>
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold !text-black">{totalSleeps}</div>
+            <div className="text-xs sm:text-sm !text-black mt-1">Sleep Sessions</div>
           </div>
           <div className="bg-baby-yellow dark:bg-opacity-20 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center">
             <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2">🎯</div>
-            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">{totalDiapers}</div>
-            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">Diaper Changes</div>
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold !text-black">{totalDiapers}</div>
+            <div className="text-xs sm:text-sm !text-black mt-1">Diaper Changes</div>
           </div>
           <div className="bg-baby-blue dark:bg-opacity-20 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center">
             <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2">🫗</div>
-            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-accent-600 dark:text-accent-400">{totalPumpingSessions}</div>
-            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">Pumping Sessions</div>
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold !text-black">{totalPumpingSessions}</div>
+            <div className="text-xs sm:text-sm !text-black mt-1">Pumping Sessions</div>
           </div>
         </div>
       </section>
@@ -237,6 +240,69 @@ export function OverallReport({ feedings, sleeps, diapers, pumpings, dateRange, 
             </div>
           </section>
         )}
+
+        {/* Growth Measurements */}
+        {growths.length > 0 && (
+          <section>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">📏 Growth Measurements</h3>
+            <div className="bg-white dark:bg-gray-700 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-soft">
+              <div className="space-y-2">
+                {growths.slice(0, 5).map((growth, idx) => (
+                  <div key={idx} className="flex items-center justify-between text-xs sm:text-sm border-b border-gray-200 dark:border-gray-600 pb-2 last:border-0">
+                    <span className="text-gray-600 dark:text-gray-400">{format(parseISO(growth.measured_at), 'MMM d, yyyy')}</span>
+                    <div className="flex gap-3 text-gray-900 dark:text-gray-100">
+                      {growth.weight_kg && <span>Weight: <strong>{growth.weight_kg} kg</strong></span>}
+                      {growth.height_cm && <span>Height: <strong>{growth.height_cm} cm</strong></span>}
+                      {growth.head_circumference_cm && <span>Head: <strong>{growth.head_circumference_cm} cm</strong></span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Medications */}
+        {medications.length > 0 && (
+          <section>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">💊 Medications Administered</h3>
+            <div className="bg-white dark:bg-gray-700 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-soft">
+              <div className="space-y-2">
+                {medications.map((med, idx) => (
+                  <div key={idx} className="flex items-center justify-between text-xs sm:text-sm border-b border-gray-200 dark:border-gray-600 pb-2 last:border-0">
+                    <div className="flex-1">
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">{med.medications?.medication_name || 'Unknown'}</span>
+                      <span className="text-gray-600 dark:text-gray-400 ml-2">
+                        {med.medications?.dosage} {med.medications?.unit}
+                      </span>
+                    </div>
+                    <span className="text-gray-600 dark:text-gray-400">{format(parseISO(med.administered_at), 'MMM d, h:mm a')}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Vaccinations */}
+        {vaccinations.length > 0 && (
+          <section>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">💉 Vaccinations</h3>
+            <div className="bg-white dark:bg-gray-700 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-soft">
+              <div className="space-y-2">
+                {vaccinations.map((vax, idx) => (
+                  <div key={idx} className="flex items-center justify-between text-xs sm:text-sm border-b border-gray-200 dark:border-gray-600 pb-2 last:border-0">
+                    <div className="flex-1">
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">{vax.vaccine_name}</span>
+                      {vax.notes && <span className="text-gray-600 dark:text-gray-400 ml-2 italic">({vax.notes})</span>}
+                    </div>
+                    <span className="text-gray-600 dark:text-gray-400">{format(parseISO(vax.administered_date), 'MMM d, yyyy')}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </div>
 
       {/* Page 3 Header - Hidden on screen */}
@@ -249,7 +315,7 @@ export function OverallReport({ feedings, sleeps, diapers, pumpings, dateRange, 
         <section>
           <h3 className="insights-heading text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">💡 Key Insights</h3>
           <div className="bg-gradient-to-r from-baby-pink to-baby-blue dark:bg-opacity-20 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6">
-            <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-700 dark:text-gray-300">
+            <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base !text-black">
               <li className="flex items-start">
                 <span className="mr-2 flex-shrink-0">•</span>
                 <span>Your baby averaged <strong>{avgFeedingsPerDay} feedings per day</strong> and <strong>{avgSleepHoursPerDay} hours of sleep per day</strong></span>

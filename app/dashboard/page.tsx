@@ -75,11 +75,17 @@ export default function DashboardPage() {
     sleeps: SleepLog[]
     diapers: DiaperChange[]
     pumpings: PumpingLog[]
+    growths: any[]
+    medications: any[]
+    vaccinations: any[]
   }>({
     feedings: [],
     sleeps: [],
     diapers: [],
     pumpings: [],
+    growths: [],
+    medications: [],
+    vaccinations: [],
   })
   const [latestActivities, setLatestActivities] = useState<{
     lastFeeding?: FeedingLog
@@ -320,7 +326,7 @@ export default function DashboardPage() {
       const endDate = dateRange.end.toISOString()
 
       // Fetch all data for the date range
-      const [feedingsRes, sleepsRes, diapersRes, pumpingsRes] = await Promise.all([
+      const [feedingsRes, sleepsRes, diapersRes, pumpingsRes, growthsRes, medicationsRes, vaccinationsRes] = await Promise.all([
         supabase
           .from('feeding_logs')
           .select('*')
@@ -349,6 +355,28 @@ export default function DashboardPage() {
           .gte('started_at', startDate)
           .lte('started_at', endDate)
           .order('started_at', { ascending: false }),
+        supabase
+          .from('growth_measurements')
+          .select('*')
+          .eq('baby_id', activeBaby.id)
+          .gte('measured_at', startDate)
+          .lte('measured_at', endDate)
+          .order('measured_at', { ascending: false }),
+        supabase
+          .from('medication_logs')
+          .select('*, medications(medication_name, dosage, unit)')
+          .eq('medications.baby_id', activeBaby.id)
+          .gte('administered_at', startDate)
+          .lte('administered_at', endDate)
+          .order('administered_at', { ascending: false }),
+        supabase
+          .from('vaccinations')
+          .select('*')
+          .eq('baby_id', activeBaby.id)
+          .not('administered_date', 'is', null)
+          .gte('administered_date', startDate)
+          .lte('administered_date', endDate)
+          .order('administered_date', { ascending: false }),
       ])
 
       setReportData({
@@ -356,6 +384,9 @@ export default function DashboardPage() {
         sleeps: sleepsRes.data || [],
         diapers: diapersRes.data || [],
         pumpings: pumpingsRes.data || [],
+        growths: growthsRes.data || [],
+        medications: medicationsRes.data || [],
+        vaccinations: vaccinationsRes.data || [],
       })
 
       setShowReport(true)
@@ -671,12 +702,18 @@ export default function DashboardPage() {
             sleeps={reportData.sleeps}
             diapers={reportData.diapers}
             pumpings={reportData.pumpings}
+            growths={reportData.growths}
+            medications={reportData.medications}
+            vaccinations={reportData.vaccinations}
           >
             <OverallReport
               feedings={reportData.feedings}
               sleeps={reportData.sleeps}
               diapers={reportData.diapers}
               pumpings={reportData.pumpings}
+              growths={reportData.growths}
+              medications={reportData.medications}
+              vaccinations={reportData.vaccinations}
               dateRange={dateRange}
               babyName={activeBaby.name}
             />

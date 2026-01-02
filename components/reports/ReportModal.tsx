@@ -23,6 +23,9 @@ interface ReportModalProps {
   sleeps?: SleepLog[]
   diapers?: DiaperChange[]
   pumpings?: PumpingLog[]
+  growths?: any[]
+  medications?: any[]
+  vaccinations?: any[]
 }
 
 export function ReportModal({
@@ -35,7 +38,10 @@ export function ReportModal({
   feedings = [],
   sleeps = [],
   diapers = [],
-  pumpings = []
+  pumpings = [],
+  growths = [],
+  medications = [],
+  vaccinations = []
 }: ReportModalProps) {
   // Handle escape key to close modal
   useEffect(() => {
@@ -72,6 +78,9 @@ export function ReportModal({
           sleeps={sleeps}
           diapers={diapers}
           pumpings={pumpings}
+          growths={growths}
+          medications={medications}
+          vaccinations={vaccinations}
           dateRange={dateRange}
           babyName={babyName}
         />

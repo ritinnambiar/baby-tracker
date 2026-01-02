@@ -119,7 +119,7 @@ export function PumpingForm({ onComplete }: { onComplete?: () => void }) {
 
           {/* Start Time */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium !text-black mb-1.5">
               Start Time
             </label>
             <input
@@ -134,7 +134,7 @@ export function PumpingForm({ onComplete }: { onComplete?: () => void }) {
 
           {/* End Time */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium !text-black mb-1.5">
               End Time
             </label>
             <input

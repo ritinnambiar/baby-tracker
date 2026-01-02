@@ -327,7 +327,11 @@ export default function AnalyticsPage() {
                         <CartesianGrid strokeDasharray="3 3" stroke="#444" />
                         <XAxis dataKey="date" tick={{ fill: '#fff' }} />
                         <YAxis tick={{ fill: '#fff' }} />
-                        <Tooltip contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }}
+                          itemStyle={{ color: '#fff' }}
+                          labelStyle={{ color: '#fff' }}
+                        />
                         <Legend wrapperStyle={{ color: '#fff' }} />
                         <Line
                           type="monotone"
@@ -374,7 +378,11 @@ export default function AnalyticsPage() {
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Pie>
-                          <Tooltip contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }} />
+                          <Tooltip
+                            contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }}
+                            itemStyle={{ color: '#fff' }}
+                            labelStyle={{ color: '#fff' }}
+                          />
                         </PieChart>
                       </ResponsiveContainer>
                     </Card>
@@ -400,7 +408,11 @@ export default function AnalyticsPage() {
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Pie>
-                          <Tooltip contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }} />
+                          <Tooltip
+                            contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }}
+                            itemStyle={{ color: '#fff' }}
+                            labelStyle={{ color: '#fff' }}
+                          />
                         </PieChart>
                       </ResponsiveContainer>
                     </Card>
@@ -416,7 +428,11 @@ export default function AnalyticsPage() {
                         <CartesianGrid strokeDasharray="3 3" stroke="#444" />
                         <XAxis dataKey="name" tick={{ fill: '#fff' }} />
                         <YAxis tick={{ fill: '#fff' }} />
-                        <Tooltip contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #444', color: '#fff' }}
+                          itemStyle={{ color: '#fff' }}
+                          labelStyle={{ color: '#fff' }}
+                        />
                         <Legend wrapperStyle={{ color: '#fff' }} />
                         <Bar dataKey="hours" fill="#0074FF" name="Total Hours" />
                         <Bar dataKey="count" fill="#10B981" name="Session Count" />

@@ -117,7 +117,7 @@ export function GrowthForm({ onComplete }: { onComplete?: () => void }) {
 
           {/* Time */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium !text-black mb-1.5">
               Measured At
             </label>
             <input
@@ -141,7 +141,7 @@ export function GrowthForm({ onComplete }: { onComplete?: () => void }) {
 
           {user && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-sm font-medium !text-black mb-1.5">
                 Photo (Optional)
               </label>
               <ImageUpload

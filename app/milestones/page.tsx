@@ -22,7 +22,7 @@ interface Milestone {
   baby_id: string
   milestone_title: string
   milestone_category: string
-  achieved_date: string
+  achieved_date: string | null
   age_months: number | null
   description: string | null
   photo_url: string | null

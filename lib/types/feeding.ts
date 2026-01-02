@@ -13,6 +13,7 @@ export interface FeedingLog {
   started_at: string
   ended_at: string | null
   notes: string | null
+  photo_url: string | null
   created_at: string
   updated_at: string
 }

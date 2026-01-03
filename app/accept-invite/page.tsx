@@ -53,20 +53,23 @@ function AcceptInviteContent() {
       hasUser: !!user,
       hasInvitation: !!invitation,
       hasBaby: !!baby,
+      hasBabyId: !!invitation?.baby_id,
       accepting,
       user,
       invitation,
       baby
     })
 
-    if (user && invitation && baby && !accepting) {
+    // We only need invitation.baby_id to accept, not the full baby object
+    // (RLS blocks baby access until user is a caregiver)
+    if (user && invitation && invitation.baby_id && !accepting) {
       console.log('All conditions met, calling acceptInvitation()')
       acceptInvitation()
     } else {
       console.log('Conditions not met for acceptance')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, invitation, baby])
+  }, [user, invitation])
 
   const loadInvitation = async () => {
     console.log('loadInvitation() called, token:', token, 'user:', !!user)
@@ -151,7 +154,7 @@ function AcceptInviteContent() {
   }
 
   const acceptInvitation = async () => {
-    if (!user || !invitation || !baby || accepting) return
+    if (!user || !invitation || !invitation.baby_id || accepting) return
 
     setAccepting(true)
     try {
@@ -164,6 +167,7 @@ function AcceptInviteContent() {
 
       if (profile?.email.toLowerCase() !== invitation.invited_email.toLowerCase()) {
         setError(`This invitation is for ${invitation.invited_email}. Please sign in with that email.`)
+        setAccepting(false)
         return
       }
 
@@ -177,7 +181,7 @@ function AcceptInviteContent() {
 
       if (existingCaregiver) {
         console.log('User is already a caregiver for this baby')
-        toast.success(`You already have access to ${baby.name}!`)
+        toast.success(`You already have access to this baby!`)
         router.push('/dashboard')
         return
       }
@@ -243,7 +247,8 @@ function AcceptInviteContent() {
         console.log('Invitation updated successfully:', updatedInvitation)
       }
 
-      toast.success(`You're now a caregiver for ${baby.name}!`)
+      const babyName = baby?.name || invitation.baby?.name || 'this baby'
+      toast.success(`You're now a caregiver for ${babyName}!`)
       console.log('Redirecting to dashboard in 1 second...')
 
       // Wait a moment for the database to update, then redirect

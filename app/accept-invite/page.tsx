@@ -108,19 +108,39 @@ function AcceptInviteContent() {
       }
 
       // Add user as caregiver
-      const { error: caregiverError } = await supabase.from('baby_caregivers').insert({
+      console.log('Attempting to add caregiver:', {
         baby_id: invitation.baby_id,
         user_id: user.id,
         role: 'caregiver',
         added_by: invitation.invited_by,
       })
 
+      const { data: newCaregiver, error: caregiverError } = await supabase
+        .from('baby_caregivers')
+        .insert({
+          baby_id: invitation.baby_id,
+          user_id: user.id,
+          role: 'caregiver',
+          added_by: invitation.invited_by,
+        })
+        .select()
+
       if (caregiverError) {
         console.error('Error adding caregiver:', caregiverError)
         throw caregiverError
       }
 
-      console.log('Successfully added caregiver for baby:', invitation.baby_id)
+      console.log('Successfully added caregiver:', newCaregiver)
+
+      // Verify the caregiver was added by querying again
+      const { data: verifyCaregiver, error: verifyError } = await supabase
+        .from('baby_caregivers')
+        .select('*')
+        .eq('baby_id', invitation.baby_id)
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      console.log('Verification query result:', verifyCaregiver, verifyError)
 
       // Mark invitation as accepted
       const { error: updateError } = await supabase

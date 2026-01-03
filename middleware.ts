@@ -2,24 +2,24 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
-
-  // List of protected paths
-  const protectedPaths = ['/dashboard', '/feeding', '/sleep', '/diaper', '/growth', '/pumping', '/medications', '/vaccinations', '/milestones', '/settings', '/analytics']
-  const isProtectedPath = protectedPaths.some(path => pathname === path || pathname.startsWith(path + '/'))
-
-  // Skip auth check if env vars are missing - just allow through
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    console.log('Middleware: Missing Supabase env vars')
-    return NextResponse.next({ request })
-  }
-
   try {
+    const pathname = request.nextUrl.pathname
+
+    // List of protected paths
+    const protectedPaths = ['/dashboard', '/feeding', '/sleep', '/diaper', '/growth', '/pumping', '/medications', '/vaccinations', '/milestones', '/settings', '/analytics']
+    const isProtectedPath = protectedPaths.some(path => pathname === path || pathname.startsWith(path + '/'))
+
+    // Skip auth check if env vars are missing - just allow through
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.log('Middleware: Missing Supabase env vars')
+      return NextResponse.next({ request })
+    }
+
     let response = NextResponse.next({ request })
 
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         cookies: {
           getAll() {
@@ -38,17 +38,19 @@ export async function middleware(request: NextRequest) {
       }
     )
 
-    // Get user - check for errors in the response, not thrown errors
-    const { data: { user }, error: authError } = await Promise.race([
-      supabase.auth.getUser(),
-      new Promise<{ data: { user: null }, error: any }>((resolve) =>
-        setTimeout(() => resolve({ data: { user: null }, error: { message: 'Timeout' } }), 3000)
-      )
-    ])
-
-    // AuthSessionMissingError is expected when there's no session - don't log it as an error
-    if (authError && authError.message !== 'Auth session missing!') {
-      console.error('Unexpected auth error:', authError)
+    // Get user with timeout - treat timeout as no user
+    let user = null
+    try {
+      const result = await Promise.race([
+        supabase.auth.getUser(),
+        new Promise<{ data: { user: null }, error: { message: string } }>((_, reject) =>
+          setTimeout(() => reject(new Error('Auth timeout')), 2000)
+        )
+      ])
+      user = result.data.user
+    } catch (err) {
+      // Timeout or auth error - treat as no user
+      user = null
     }
 
     // Redirect unauthenticated users away from protected routes
@@ -67,9 +69,13 @@ export async function middleware(request: NextRequest) {
 
     return response
   } catch (error) {
-    // On any error, just allow the request through
-    console.error('Middleware error:', error)
-    return NextResponse.next({ request })
+    // Catch-all: on any error in middleware, allow the request through
+    console.error('Middleware critical error:', error)
+    return NextResponse.next({
+      request: {
+        headers: request.headers,
+      },
+    })
   }
 }
 

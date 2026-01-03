@@ -38,13 +38,21 @@ export async function middleware(request: NextRequest) {
       }
     )
 
-    // Get user with timeout protection
-    const { data: { user } } = await Promise.race([
-      supabase.auth.getUser(),
-      new Promise<{ data: { user: null } }>((resolve) =>
-        setTimeout(() => resolve({ data: { user: null } }), 3000)
-      )
-    ])
+    // Get user - treat any error as "not authenticated"
+    let user = null
+    try {
+      const result = await Promise.race([
+        supabase.auth.getUser(),
+        new Promise<{ data: { user: null }, error: any }>((resolve) =>
+          setTimeout(() => resolve({ data: { user: null }, error: { message: 'Timeout' } }), 3000)
+        )
+      ])
+      user = result.data.user
+    } catch (authError) {
+      // AuthSessionMissingError or any other auth error means no user
+      console.log('Auth check failed (treating as unauthenticated):', authError)
+      user = null
+    }
 
     // Redirect unauthenticated users away from protected routes
     if (!user && isProtectedPath) {

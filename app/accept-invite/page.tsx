@@ -143,15 +143,22 @@ function AcceptInviteContent() {
       console.log('Verification query result:', verifyCaregiver, verifyError)
 
       // Mark invitation as accepted
-      const { error: updateError } = await supabase
+      console.log('Attempting to update invitation status:', invitation.id)
+      const { data: updatedInvitation, error: updateError } = await supabase
         .from('baby_invitations')
         .update({
           status: 'accepted',
           accepted_at: new Date().toISOString(),
         })
         .eq('id', invitation.id)
+        .select()
 
-      if (updateError) throw updateError
+      if (updateError) {
+        console.error('Error updating invitation:', updateError)
+        throw updateError
+      }
+
+      console.log('Invitation updated successfully:', updatedInvitation)
 
       toast.success(`You're now a caregiver for ${baby.name}!`)
 

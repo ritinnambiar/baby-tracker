@@ -56,6 +56,7 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
 
       if (error) throw error
 
+      console.log('Fetched caregivers:', data)
       setCaregivers(data as any || [])
 
       // Check if current user is owner
@@ -271,9 +272,19 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
 
   return (
     <Card>
-      <h3 className="text-xl font-bold mb-4" style={{ color: 'rgb(245, 245, 255)' }}>
-        Caregivers for {babyName}
-      </h3>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-bold" style={{ color: 'rgb(245, 245, 255)' }}>
+          Caregivers for {babyName}
+        </h3>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => fetchData()}
+          className="text-xs"
+        >
+          🔄 Refresh
+        </Button>
+      </div>
 
       {loading ? (
         <div className="flex justify-center py-8">

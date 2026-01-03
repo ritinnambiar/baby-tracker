@@ -1,14 +1,9 @@
 // Service Worker for Baby Tracker PWA
-const CACHE_NAME = 'baby-tracker-v1'
+const CACHE_NAME = 'baby-tracker-v2'
 const urlsToCache = [
   '/',
-  '/dashboard',
-  '/feeding',
-  '/sleep',
-  '/diaper',
-  '/pumping',
-  '/growth',
-  '/settings',
+  '/login',
+  '/signup',
 ]
 
 // Install event - cache assets
@@ -66,6 +61,31 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
+  // Network-first strategy for navigation requests (to handle auth redirects)
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Don't cache redirects or errors
+          if (!response || response.status >= 300 || response.type === 'error') {
+            return response
+          }
+
+          const responseToCache = response.clone()
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache)
+          })
+
+          return response
+        })
+        .catch(() => {
+          // If network fails, try cache as fallback
+          return caches.match(event.request)
+        })
+    )
+    return
+  }
+
   // Cache-first strategy for static assets
   event.respondWith(
     caches.match(event.request).then((response) => {
@@ -74,7 +94,7 @@ self.addEventListener('fetch', (event) => {
       }
 
       return fetch(event.request).then((response) => {
-        // Don't cache non-successful responses
+        // Don't cache redirects, non-successful responses, or errors
         if (!response || response.status !== 200 || response.type === 'error') {
           return response
         }

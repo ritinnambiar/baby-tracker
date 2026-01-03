@@ -4,22 +4,22 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Skip middleware during build time if env vars are missing
+  // List of protected paths
+  const protectedPaths = ['/dashboard', '/feeding', '/sleep', '/diaper', '/growth', '/pumping', '/medications', '/vaccinations', '/milestones', '/settings', '/analytics']
+  const isProtectedPath = protectedPaths.some(path => pathname === path || pathname.startsWith(path + '/'))
+
+  // Skip auth check if env vars are missing - just allow through
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    console.log('Middleware: Missing Supabase env vars, skipping auth check')
-    return NextResponse.next({
-      request,
-    })
+    console.log('Middleware: Missing Supabase env vars')
+    return NextResponse.next({ request })
   }
 
-  let supabaseResponse = NextResponse.next({
-    request,
-  })
-
   try {
+    let response = NextResponse.next({ request })
+
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           getAll() {
@@ -29,63 +29,42 @@ export async function middleware(request: NextRequest) {
             cookiesToSet.forEach(({ name, value }) => {
               request.cookies.set(name, value)
             })
-            supabaseResponse = NextResponse.next({
-              request,
-            })
+            response = NextResponse.next({ request })
             cookiesToSet.forEach(({ name, value, options }) => {
-              supabaseResponse.cookies.set(name, value, options)
+              response.cookies.set(name, value, options)
             })
           },
         },
       }
     )
 
-    // Refreshing the auth token
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
+    // Get user with timeout protection
+    const { data: { user } } = await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<{ data: { user: null } }>((resolve) =>
+        setTimeout(() => resolve({ data: { user: null } }), 3000)
+      )
+    ])
 
-    if (authError) {
-      console.error('Middleware auth error:', authError)
-    }
-
-    // Protected routes - redirect to login if not authenticated
-    const protectedPaths = ['/dashboard', '/feeding', '/sleep', '/diaper', '/growth', '/pumping', '/medications', '/vaccinations', '/milestones', '/settings', '/analytics']
-    const isProtectedPath = protectedPaths.some(path => pathname === path || pathname.startsWith(path + '/'))
-
+    // Redirect unauthenticated users away from protected routes
     if (!user && isProtectedPath) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      console.log(`Redirecting unauthenticated user from ${pathname} to /login`)
-      return NextResponse.redirect(url)
+      const redirectUrl = request.nextUrl.clone()
+      redirectUrl.pathname = '/login'
+      return NextResponse.redirect(redirectUrl)
     }
 
-    // Redirect to dashboard if already logged in and trying to access auth pages
+    // Redirect authenticated users away from auth pages
     if (user && (pathname === '/login' || pathname === '/signup')) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/dashboard'
-      console.log(`Redirecting authenticated user from ${pathname} to /dashboard`)
-      return NextResponse.redirect(url)
+      const redirectUrl = request.nextUrl.clone()
+      redirectUrl.pathname = '/dashboard'
+      return NextResponse.redirect(redirectUrl)
     }
 
-    return supabaseResponse
+    return response
   } catch (error) {
+    // On any error, just allow the request through
     console.error('Middleware error:', error)
-    // On error, redirect to login for protected routes
-    const protectedPaths = ['/dashboard', '/feeding', '/sleep', '/diaper', '/growth', '/pumping', '/medications', '/vaccinations', '/milestones', '/settings', '/analytics']
-    const isProtectedPath = protectedPaths.some(path => pathname === path || pathname.startsWith(path + '/'))
-
-    if (isProtectedPath) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      return NextResponse.redirect(url)
-    }
-
-    // For non-protected routes, allow the request to proceed
-    return NextResponse.next({
-      request,
-    })
+    return NextResponse.next({ request })
   }
 }
 

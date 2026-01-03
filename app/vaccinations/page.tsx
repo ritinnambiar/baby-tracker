@@ -52,11 +52,11 @@ export default function VaccinationsPage() {
   const babyAgeMonths = activeBaby ? differenceInMonths(new Date(), parseISO(activeBaby.date_of_birth)) : 0
 
   useEffect(() => {
-    if (!user) {
+    if (!authLoading && !user) {
       router.push('/login')
       return
     }
-  }, [user, router])
+  }, [user, authLoading, router])
 
   useEffect(() => {
     const fetchVaccinations = async () => {

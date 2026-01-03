@@ -47,11 +47,11 @@ export default function AnalyticsPage() {
   })
 
   useEffect(() => {
-    if (!user) {
+    if (!authLoading && !user) {
       router.push('/login')
       return
     }
-  }, [user, router])
+  }, [user, authLoading, router])
 
   useEffect(() => {
     const fetchData = async () => {

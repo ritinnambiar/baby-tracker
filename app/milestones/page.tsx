@@ -47,11 +47,11 @@ export default function MilestonesPage() {
   })
 
   useEffect(() => {
-    if (!user) {
+    if (!authLoading && !user) {
       router.push('/login')
       return
     }
-  }, [user, router])
+  }, [user, authLoading, router])
 
   // Helper function to get milestone expected age for sorting
   const getMilestoneAge = (milestone: Milestone): number => {

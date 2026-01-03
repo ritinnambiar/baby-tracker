@@ -53,11 +53,11 @@ export default function MedicationsPage() {
   const [selectedMedication, setSelectedMedication] = useState<Medication | null>(null)
 
   useEffect(() => {
-    if (!user) {
+    if (!authLoading && !user) {
       router.push('/login')
       return
     }
-  }, [user, router])
+  }, [user, authLoading, router])
 
   useEffect(() => {
     const fetchData = async () => {

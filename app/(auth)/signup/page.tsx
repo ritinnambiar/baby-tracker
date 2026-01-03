@@ -45,20 +45,20 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-baby-purple via-baby-peach to-baby-green">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-primary-500 mb-2">
             Baby Tracker
           </h1>
-          <p className="!text-white">Create your account to get started</p>
+          <p className="text-white">Create your account to get started</p>
         </div>
 
         {/* Signup Card */}
-        <div className="bg-white rounded-3xl shadow-soft p-8">
+        <div className="bg-[rgb(35,35,45)] rounded-3xl shadow-soft p-8 border border-gray-700">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl text-red-700 text-sm">
+            <div className="mb-6 p-4 bg-red-900/20 border-2 border-red-500/50 rounded-2xl text-red-400 text-sm">
               {error}
             </div>
           )}
@@ -93,7 +93,7 @@ export default function SignupPage() {
               minLength={6}
             />
 
-            <p className="text-xs !text-white opacity-70">
+            <p className="text-xs text-gray-400">
               Password must be at least 6 characters long
             </p>
 
@@ -108,7 +108,7 @@ export default function SignupPage() {
           </form>
 
           {/* Sign In Link */}
-          <p className="mt-6 text-center text-sm !text-white">
+          <p className="mt-6 text-center text-sm text-gray-400">
             Already have an account?{' '}
             <Link
               href="/login"

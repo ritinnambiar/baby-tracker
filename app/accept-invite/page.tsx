@@ -34,8 +34,15 @@ function AcceptInviteContent() {
 
   // Reload invitation when user logs in
   useEffect(() => {
-    if (user && invitation && !baby) {
-      // User just logged in, reload invitation to get full details
+    console.log('User changed, checking if need to reload invitation:', {
+      hasUser: !!user,
+      hasInvitation: !!invitation,
+      hasBaby: !!baby
+    })
+
+    if (user && !baby) {
+      // User is logged in but we don't have baby data yet - reload invitation
+      console.log('User logged in, reloading invitation with auth')
       loadInvitation()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -42,13 +42,27 @@ function AcceptInviteContent() {
   }, [user])
 
   useEffect(() => {
+    console.log('Accept invitation check:', {
+      hasUser: !!user,
+      hasInvitation: !!invitation,
+      hasBaby: !!baby,
+      accepting,
+      user,
+      invitation,
+      baby
+    })
+
     if (user && invitation && baby && !accepting) {
+      console.log('All conditions met, calling acceptInvitation()')
       acceptInvitation()
+    } else {
+      console.log('Conditions not met for acceptance')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, invitation, baby])
 
   const loadInvitation = async () => {
+    console.log('loadInvitation() called, token:', token, 'user:', !!user)
     try {
       const { data, error } = await supabase
         .from('baby_invitations')
@@ -61,6 +75,8 @@ function AcceptInviteContent() {
         `)
         .eq('token', token!)
         .single()
+
+      console.log('Invitation query result:', { data, error })
 
       // If query fails due to RLS (user not authenticated), store minimal data
       // The unauthenticated UI will show login/signup options
@@ -108,6 +124,7 @@ function AcceptInviteContent() {
         return
       }
 
+      console.log('Setting invitation and baby state:', { invitation: data, baby: data.baby })
       setInvitation(data)
       setBaby(data.baby)
       setLoading(false)

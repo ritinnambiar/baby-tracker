@@ -142,10 +142,27 @@ function AcceptInviteContent() {
 
       if (caregiverError) {
         console.error('Error adding caregiver:', caregiverError)
+        console.error('Full error details:', JSON.stringify(caregiverError, null, 2))
+        toast.error(`Failed to add caregiver: ${caregiverError.message || 'Unknown error'}`)
         throw caregiverError
       }
 
+      if (!newCaregiver || newCaregiver.length === 0) {
+        console.error('No caregiver record returned after INSERT')
+        toast.error('Failed to add caregiver: No record created')
+        return
+      }
+
       console.log('Successfully added caregiver:', newCaregiver)
+
+      // Verify the caregiver can now see the baby
+      const { data: verifyBaby, error: verifyBabyError } = await supabase
+        .from('babies')
+        .select('id, name')
+        .eq('id', invitation.baby_id)
+        .maybeSingle()
+
+      console.log('Verification - Can user see baby?', verifyBaby, verifyBabyError)
 
       // Mark invitation as accepted
       console.log('Attempting to update invitation status:', invitation.id)
@@ -160,19 +177,22 @@ function AcceptInviteContent() {
 
       if (updateError) {
         console.error('Error updating invitation:', updateError)
-        throw updateError
+        toast.error(`Caregiver added but failed to update invitation: ${updateError.message}`)
+        // Don't throw - caregiver was already added successfully
+      } else {
+        console.log('Invitation updated successfully:', updatedInvitation)
       }
 
-      console.log('Invitation updated successfully:', updatedInvitation)
-
       toast.success(`You're now a caregiver for ${baby.name}!`)
+      console.log('Redirecting to dashboard in 1 second...')
 
       // Wait a moment for the database to update, then redirect
       setTimeout(() => {
+        console.log('Executing redirect now')
         router.push('/dashboard')
         // Force a page reload to refresh the baby list
         router.refresh()
-      }, 500)
+      }, 1000)
     } catch (err: any) {
       console.error('Error accepting invitation:', err)
       toast.error(err.message || 'Failed to accept invitation')

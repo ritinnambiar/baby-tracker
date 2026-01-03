@@ -20,6 +20,7 @@ function AcceptInviteContent() {
   const [invitation, setInvitation] = useState<any>(null)
   const [baby, setBaby] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
+  const [accepting, setAccepting] = useState(false)
 
   useEffect(() => {
     if (token) {
@@ -32,11 +33,11 @@ function AcceptInviteContent() {
   }, [token])
 
   useEffect(() => {
-    if (user && invitation) {
+    if (user && invitation && baby && !accepting) {
       acceptInvitation()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, invitation])
+  }, [user, invitation, baby])
 
   const loadInvitation = async () => {
     try {
@@ -50,11 +51,24 @@ function AcceptInviteContent() {
           )
         `)
         .eq('token', token!)
-        .eq('status', 'pending')
         .single()
 
       if (error || !data) {
         setError('Invitation not found or has expired')
+        setLoading(false)
+        return
+      }
+
+      // Check if invitation was already accepted
+      if (data.status === 'accepted') {
+        setError(`You've already accepted this invitation for ${data.baby?.name || 'this baby'}!`)
+        setLoading(false)
+        return
+      }
+
+      // Check if invitation is not pending
+      if (data.status !== 'pending') {
+        setError('This invitation is no longer valid')
         setLoading(false)
         return
       }
@@ -77,8 +91,9 @@ function AcceptInviteContent() {
   }
 
   const acceptInvitation = async () => {
-    if (!user || !invitation) return
+    if (!user || !invitation || !baby || accepting) return
 
+    setAccepting(true)
     try {
       // Check if user's email matches the invitation
       const { data: profile } = await supabase
@@ -161,6 +176,7 @@ function AcceptInviteContent() {
     } catch (err: any) {
       console.error('Error accepting invitation:', err)
       toast.error(err.message || 'Failed to accept invitation')
+      setAccepting(false) // Reset flag on error so user can try again
     }
   }
 

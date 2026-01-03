@@ -405,7 +405,7 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
                           variant="ghost"
                           size="sm"
                           onClick={() => copyInviteLink(invitation.token)}
-                          className="text-xs px-2 py-1 h-7 hover:text-black"
+                          className="text-xs px-2 py-1 h-7 text-gray-400 hover:!text-black"
                         >
                           Copy
                         </Button>

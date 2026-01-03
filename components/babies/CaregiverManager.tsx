@@ -312,18 +312,10 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
 
   return (
     <Card>
-      <div className="flex justify-between items-center mb-4">
+      <div className="mb-4">
         <h3 className="text-xl font-bold" style={{ color: 'rgb(245, 245, 255)' }}>
           Caregivers for {babyName}
         </h3>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => fetchData()}
-          className="text-xs"
-        >
-          🔄 Refresh
-        </Button>
       </div>
 
       {loading ? (

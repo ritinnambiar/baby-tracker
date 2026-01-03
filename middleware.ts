@@ -38,20 +38,17 @@ export async function middleware(request: NextRequest) {
       }
     )
 
-    // Get user - treat any error as "not authenticated"
-    let user = null
-    try {
-      const result = await Promise.race([
-        supabase.auth.getUser(),
-        new Promise<{ data: { user: null }, error: any }>((resolve) =>
-          setTimeout(() => resolve({ data: { user: null }, error: { message: 'Timeout' } }), 3000)
-        )
-      ])
-      user = result.data.user
-    } catch (authError) {
-      // AuthSessionMissingError or any other auth error means no user
-      console.log('Auth check failed (treating as unauthenticated):', authError)
-      user = null
+    // Get user - check for errors in the response, not thrown errors
+    const { data: { user }, error: authError } = await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<{ data: { user: null }, error: any }>((resolve) =>
+        setTimeout(() => resolve({ data: { user: null }, error: { message: 'Timeout' } }), 3000)
+      )
+    ])
+
+    // AuthSessionMissingError is expected when there's no session - don't log it as an error
+    if (authError && authError.message !== 'Auth session missing!') {
+      console.error('Unexpected auth error:', authError)
     }
 
     // Redirect unauthenticated users away from protected routes

@@ -7,12 +7,9 @@ export async function middleware(request: NextRequest) {
   const protectedPaths = ['/dashboard', '/feeding', '/sleep', '/diaper', '/growth', '/pumping', '/medications', '/vaccinations', '/milestones', '/settings', '/analytics']
   const isProtectedPath = protectedPaths.some(path => pathname === path || pathname.startsWith(path + '/'))
 
-  // Simple cookie-based auth check (lightweight for Edge Runtime)
-  // Supabase stores auth in cookies with 'sb-' prefix
+  // Check for Supabase auth cookies (any cookie starting with 'sb-')
   const cookies = request.cookies
-  const hasAuthCookie = cookies.getAll().some(cookie =>
-    cookie.name.includes('sb-') && cookie.name.includes('auth-token')
-  )
+  const hasAuthCookie = cookies.getAll().some(cookie => cookie.name.startsWith('sb-'))
 
   // Redirect to login if accessing protected route without auth cookie
   if (isProtectedPath && !hasAuthCookie) {

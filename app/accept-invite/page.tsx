@@ -32,6 +32,15 @@ function AcceptInviteContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token])
 
+  // Reload invitation when user logs in
+  useEffect(() => {
+    if (user && invitation && !baby) {
+      // User just logged in, reload invitation to get full details
+      loadInvitation()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
   useEffect(() => {
     if (user && invitation && baby && !accepting) {
       acceptInvitation()
@@ -53,8 +62,27 @@ function AcceptInviteContent() {
         .eq('token', token!)
         .single()
 
-      if (error || !data) {
+      // If query fails due to RLS (user not authenticated), store minimal data
+      // The unauthenticated UI will show login/signup options
+      if (error) {
+        console.log('Error loading invitation (possibly unauthenticated):', error)
+
+        // For unauthenticated users, just store the token
+        // We'll show login/signup UI instead of error
+        if (error.code === 'PGRST116' || error.message?.includes('406')) {
+          // Store minimal invitation data for unauthenticated state
+          setInvitation({ token: token })
+          setLoading(false)
+          return
+        }
+
         setError('Invitation not found or has expired')
+        setLoading(false)
+        return
+      }
+
+      if (!data) {
+        setError('Invitation not found')
         setLoading(false)
         return
       }
@@ -83,8 +111,16 @@ function AcceptInviteContent() {
       setInvitation(data)
       setBaby(data.baby)
       setLoading(false)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error loading invitation:', err)
+
+      // Handle unauthenticated users gracefully
+      if (!user) {
+        setInvitation({ token: token })
+        setLoading(false)
+        return
+      }
+
       setError('Failed to load invitation')
       setLoading(false)
     }
@@ -230,11 +266,15 @@ function AcceptInviteContent() {
           <div className="text-6xl mb-4">👶</div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Baby Tracker Invitation</h2>
           <p className="text-gray-600 mb-2">
-            You've been invited to track <strong>{baby?.name}</strong>!
+            {baby?.name
+              ? `You've been invited to track ${baby.name}!`
+              : "You've been invited to join a baby tracker!"}
           </p>
-          <p className="text-sm text-gray-500 mb-6">
-            Invitation for: <strong>{invitation?.invited_email}</strong>
-          </p>
+          {invitation?.invited_email && (
+            <p className="text-sm text-gray-500 mb-6">
+              Invitation for: <strong>{invitation.invited_email}</strong>
+            </p>
+          )}
           <div className="space-y-3">
             <Link href={`/signup?invite=${token}`}>
               <Button size="lg" className="w-full">

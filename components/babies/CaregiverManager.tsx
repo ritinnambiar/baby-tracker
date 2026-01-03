@@ -36,31 +36,71 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
     fetchData()
   }, [babyId])
 
+  // Auto-refresh when page becomes visible (user switches back to tab)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchData()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [babyId])
+
+  // Also refresh when component re-mounts (e.g., accordion opens/closes)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchData()
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [babyId])
+
   const fetchData = async () => {
     await Promise.all([fetchCaregivers(), fetchInvitations()])
   }
 
   const fetchCaregivers = async () => {
     try {
-      const { data, error } = await supabase
+      // First get caregivers
+      const { data: caregiversData, error: caregiversError } = await supabase
         .from('baby_caregivers')
-        .select(`
-          *,
-          profile:user_id (
-            email,
-            full_name
-          )
-        `)
+        .select('*')
         .eq('baby_id', babyId)
         .order('role', { ascending: false }) // owners first
 
-      if (error) throw error
+      if (caregiversError) throw caregiversError
 
-      console.log('Fetched caregivers:', data)
-      setCaregivers(data as any || [])
+      console.log('Fetched caregivers from baby_caregivers:', caregiversData)
+
+      // Then get profiles for each caregiver
+      if (caregiversData && caregiversData.length > 0) {
+        const userIds = caregiversData.map(c => c.user_id)
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, email, full_name')
+          .in('id', userIds)
+
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError)
+        }
+
+        console.log('Fetched profiles:', profilesData)
+
+        // Combine caregivers with profiles
+        const combinedData = caregiversData.map(caregiver => ({
+          ...caregiver,
+          profile: profilesData?.find(p => p.id === caregiver.user_id) || { email: 'Unknown', full_name: null }
+        }))
+
+        console.log('Combined caregivers with profiles:', combinedData)
+        setCaregivers(combinedData)
+      } else {
+        setCaregivers([])
+      }
 
       // Check if current user is owner
-      const userCaregiver = data?.find((c) => c.user_id === user?.id)
+      const userCaregiver = caregiversData?.find((c) => c.user_id === user?.id)
       setIsOwner(userCaregiver?.role === 'owner')
     } catch (error) {
       console.error('Error fetching caregivers:', error)

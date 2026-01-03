@@ -132,16 +132,6 @@ function AcceptInviteContent() {
 
       console.log('Successfully added caregiver:', newCaregiver)
 
-      // Verify the caregiver was added by querying again
-      const { data: verifyCaregiver, error: verifyError } = await supabase
-        .from('baby_caregivers')
-        .select('*')
-        .eq('baby_id', invitation.baby_id)
-        .eq('user_id', user.id)
-        .maybeSingle()
-
-      console.log('Verification query result:', verifyCaregiver, verifyError)
-
       // Mark invitation as accepted
       console.log('Attempting to update invitation status:', invitation.id)
       const { data: updatedInvitation, error: updateError } = await supabase

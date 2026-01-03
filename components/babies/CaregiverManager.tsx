@@ -155,6 +155,18 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
         return
       }
 
+      // Check if there's an old accepted/expired invitation and delete it
+      const { error: deleteOldError } = await supabase
+        .from('baby_invitations')
+        .delete()
+        .eq('baby_id', babyId)
+        .eq('invited_email', cleanEmail)
+        .neq('status', 'pending')
+
+      if (deleteOldError) {
+        console.error('Error deleting old invitation:', deleteOldError)
+      }
+
       // Check if user exists
       const { data: profiles, error: profileError } = await supabase
         .from('profiles')
@@ -258,7 +270,9 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
 
       setEmail('')
     } catch (error: any) {
-      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to add caregiver')
+      console.error('Error adding caregiver:', error)
+      const errorMessage = error?.message || error?.error_description || error?.hint || 'Failed to add caregiver'
+      toast.error(errorMessage)
     } finally {
       setAddingCaregiver(false)
     }
@@ -280,7 +294,9 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
       toast.success('Caregiver removed')
       fetchData()
     } catch (error: any) {
-      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to remove caregiver')
+      console.error('Error removing caregiver:', error)
+      const errorMessage = error?.message || error?.error_description || error?.hint || 'Failed to remove caregiver'
+      toast.error(errorMessage)
     }
   }
 
@@ -300,7 +316,9 @@ export function CaregiverManager({ babyId, babyName }: CaregiverManagerProps) {
       toast.success('Invitation cancelled')
       fetchData()
     } catch (error: any) {
-      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to cancel invitation')
+      console.error('Error cancelling invitation:', error)
+      const errorMessage = error?.message || error?.error_description || error?.hint || 'Failed to cancel invitation'
+      toast.error(errorMessage)
     }
   }
 
